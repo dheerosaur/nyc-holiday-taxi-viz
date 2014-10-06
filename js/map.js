@@ -1,4 +1,3 @@
-
 google.maps.event.addDomListener(window, 'load', init);
 
 function init() {
@@ -71,4 +70,61 @@ function init() {
 
   // Create the Google Map using out element and options defined above
   var map = new google.maps.Map(mapElement, mapOptions);
+
+  google.maps.event.addListenerOnce(map, 'idle', function(){
+
+    _.each(TRIPS, function (trip) {
+      
+      var getFloat = function (key) {
+        return parseFloat(trip[key]);
+      };
+
+      var pathCoordinates = [
+        new google.maps.LatLng(getFloat('pickup_latitude'), getFloat('pickup_longitude')),
+        new google.maps.LatLng(getFloat('dropoff_latitude'), getFloat('dropoff_longitude'))
+      ];
+
+      var circle = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        scale: 2,
+        fillColor: 'red',
+        fillOpacity: 1,
+        strokeOpacity: 0
+      };
+
+      var path = new google.maps.Polyline({
+        path: pathCoordinates,
+        geodesic: true,
+        icons: [{
+          icon: circle,
+          offset: "100%"
+        }],
+        strokeOpacity: .3,
+        strokeColor: '#D788A9',
+        strokeWeight: 1,
+        map: map
+      });
+
+      animateSymbol(path);
+
+    });
+
+    function animateSymbol(line) {
+        var count = 0;
+        var interval = window.setInterval(function() {
+          count = count + 2;
+
+          if (count > 100) {
+            clearInterval(interval);
+            return;
+          }
+
+          var icons = line.get('icons');
+          icons[0].offset = count + '%';
+          line.set('icons', icons);
+        }, 1);
+    }
+
+  });
+
 }
