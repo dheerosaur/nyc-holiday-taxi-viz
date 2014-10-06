@@ -1,0 +1,35 @@
+html, body, #map-canvas {
+  height: 100%;
+  margin: 0px;
+  padding: 0px
+}
+body {
+  position: relative;
+}
+
+.dragdealer {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  right: 20px;
+  height: 30px;
+  background: #EEE;
+}
+.dragdealer .handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+.dragdealer .red-bar {
+  width: 100px;
+  height: 30px;
+  background: #CC0000;
+  color: #FFF;
+  font-size: 14px;
+  line-height: 30px;
+  text-align: center;
+}
+.dragdealer .disabled {
+  background: #898989;
+}

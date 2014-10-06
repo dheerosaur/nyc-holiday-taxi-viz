@@ -73,6 +73,15 @@ function init() {
 
   google.maps.event.addListenerOnce(map, 'idle', function(){
 
+    var longestTrip = _.max(TRIPS, function (trip) {
+      return trip.trip_time_in_secs;
+    });
+
+    var maxTripTime = parseInt(longestTrip.trip_time_in_secs, 10);
+
+    // To test with just one trip
+    // TRIPS = TRIPS.slice(0, 1);
+
     _.each(TRIPS, function (trip) {
       
       var getFloat = function (key) {
@@ -84,8 +93,8 @@ function init() {
         new google.maps.LatLng(getFloat('dropoff_latitude'), getFloat('dropoff_longitude'))
       ];
 
-      var circle = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      var symbol = {
+        path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
         scale: 2,
         fillColor: 'red',
         fillOpacity: 1,
@@ -96,7 +105,7 @@ function init() {
         path: pathCoordinates,
         geodesic: true,
         icons: [{
-          icon: circle,
+          icon: symbol,
           offset: "100%"
         }],
         strokeOpacity: .3,
@@ -105,26 +114,28 @@ function init() {
         map: map
       });
 
-      animateSymbol(path);
+      var tripTime = parseInt(trip['trip_time_in_secs'], 10);
+      animateSymbol(path, tripTime);
 
     });
 
-    function animateSymbol(line) {
-        var count = 0;
-        var interval = window.setInterval(function() {
-          count = count + 2;
+    function animateSymbol(line, tripTime) {
+        var count = 0, bit = 100;
 
-          if (count > 100) {
-            clearInterval(interval);
-            return;
-          }
+        var interval = window.setInterval(function() {
+          count = count + bit;
+          percent = count < tripTime ? (count / tripTime) * 100 : 100;
 
           var icons = line.get('icons');
-          icons[0].offset = count + '%';
+          icons[0].offset = percent + '%';
           line.set('icons', icons);
-        }, 1);
+
+          if (percent === 100) clearInterval(interval);
+        }, bit);
     }
 
   });
+
+  new Dragdealer('demo-simple-slider');
 
 }

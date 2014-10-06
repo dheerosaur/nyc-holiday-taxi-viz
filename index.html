@@ -3,21 +3,19 @@
     <head>
         <title>NYC flight-taxi visualization</title>
         
-        <style type="text/css">
-          html, body, #map-canvas {
-            height: 100%;
-            margin: 0px;
-            padding: 0px
-          }
-        </style>
+        <link href="css/main.css" type="text/css" rel="stylesheet">
         
         <script src="//maps.googleapis.com/maps/api/js?sensor=false"></script>		
         <script src="js/underscore-min.js"></script>
+        <script src="js/dragdealer.min.js"></script>
         
         <script src="js/trips.js"></script>
         <script src="js/map.js"></script>
     </head>
     <body>
         <div id="map-canvas"></div>
+        <div id="demo-simple-slider" class="dragdealer">
+          <div class="handle red-bar">drag me</div>
+        </div>
     </body>
 </html>
