@@ -136,14 +136,4 @@ function init() {
 
   });
 
-  new Dragdealer('slider', {
-    steps: 11,
-    snap: true,
-    slide: false,
-    callback: function (x, y) {
-      var handle = document.querySelector('#slider .handle');
-      handle.innerHTML = x * 10;
-    }
-  });
-
 }
