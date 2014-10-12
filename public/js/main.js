@@ -7,3 +7,11 @@ L.tileLayer('http://{s}.tiles.mapbox.com/v4/' + MAPID + '/{z}/{x}/{y}.png' + TOK
   attribution: 'Copyright',
   maxZoom: 18
 }).addTo(map);
+
+
+var svg = d3.select(map.getPanes().overlayPane).append("svg")
+  , g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+d3.json('/trip', function (data) {
+  L.polyline(data).addTo(map);
+});
