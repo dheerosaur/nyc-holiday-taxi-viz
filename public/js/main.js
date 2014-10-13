@@ -35,13 +35,16 @@ var TERMINAL_COLORS = {
 
 var polylines = [];
 
-function updateQuery () {
+function updateQuery (query) {
+  if (_.isUndefined(query)) query = {};
 
   _.each(polylines, function (l) {
     map.removeLayer(l);
   });
 
-  d3.json('/trip', function (data) {
+  var url = '/trip?' + $.param(query);
+
+  d3.json(url, function (data) {
     var options =  {weight: 2, opacity: .8}
 
     _.each(data, function (trip) {
@@ -158,7 +161,7 @@ $(function () {
       , terminal = $('.terminals input:checked').val();
     $(this).css('color', 'black');
     if (airport && terminal) {
-      updateQuery();
+      updateQuery({'terminal': airport + ' ' + terminal});
     } else {
       $(this).css('color', '#d33030');
     }

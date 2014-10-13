@@ -24,11 +24,10 @@ app.all('*', function (req, res, next) {
 });
 
 router.get('/trip', function (req, res, next) {
-  var fields = ['vendor_id', 'passenger_count', 'direction', 'terminal'];
-  var query = 'select ' + fields.join() + ' from `trips`';
+  var sql = buildQuery(req.query);
 
   db.serialize(function () {
-    db.all(query, function (err, result) {
+    db.all(sql, function (err, result) {
       if (err) { console.log(err); }
       res.json(result);
     });
@@ -38,6 +37,19 @@ router.get('/trip', function (req, res, next) {
 app.use('/', router);
 app.listen(port);
 console.log('Listening on port ' + port);
+
+function buildQuery(params) {
+  var fields = ['vendor_id', 'passenger_count', 'direction', 'terminal'];
+  var sql = 'select ' + fields.join() + ' from `trips`';
+  if ( !_.isEmpty(params) ) {
+    var conditions = _.map(_.pairs(params), function (x) {
+      return x[0] + '="' + x[1] + '"';
+    });
+    sql = sql + ' WHERE ' + conditions;
+  }
+  console.log(sql);
+  return sql;
+}
 
 function createGeojson(rawData, callback) {
 
