@@ -1,12 +1,14 @@
-var map = L.map('map').setView([40.708, -73.954], 12);
+var map = L.map('map', {zoomControl: false}).setView([40.708, -73.954], 12);
 
 var TOKEN = '?access_token=pk.eyJ1IjoiZGhlZXJvc2F1ciIsImEiOiJKdHQ2TTJZIn0.qlhdcUlB-i7vnDaXgkNxhw'
   , MAPID = 'dheerosaur.jo9f69e5'
 
 L.tileLayer('http://{s}.tiles.mapbox.com/v4/' + MAPID + '/{z}/{x}/{y}.png' + TOKEN, {
   attribution: 'Copyright',
-  maxZoom: 18
+  maxZoom: 18,
 }).addTo(map);
+
+L.control.zoom({ position: 'topright' }).addTo(map);
 
 
 var svg = d3.select(map.getPanes().overlayPane).append("svg")
