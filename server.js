@@ -1,11 +1,12 @@
 var fs = require('fs')
   , express = require('express')
   , polyline = require('polyline')
-  , sqlite3 = require('sqlite3');
+  , sqlite3 = require('sqlite3')
+  , _ = require('underscore');
 
 var app = express()
   , port = process.env.PORT || 8000
-  , db = new sqlite3.Database('test.db');
+  , db = new sqlite3.Database('db');
 
 var featureCollection = {
   type: "FeatureCollection",
@@ -23,14 +24,13 @@ app.all('*', function (req, res, next) {
 });
 
 router.get('/trip', function (req, res, next) {
-  var query = 'select * from `trips` limit 1';
+  var fields = ['vendor_id', 'passenger_count', 'direction', 'terminal'];
+  var query = 'select ' + fields.join() + ' from `trips`';
 
   db.serialize(function () {
-    db.get(query, function (err, result) {
+    db.all(query, function (err, result) {
       if (err) { console.log(err); }
-      createGeojson(result, function (geojson) {
-        res.json(geojson);
-      });
+      res.json(result);
     });
   });
 });
@@ -39,26 +39,23 @@ app.use('/', router);
 app.listen(port);
 console.log('Listening on port ' + port);
 
-
 function createGeojson(rawData, callback) {
 
   featureCollection.features = [];
 
-  var feature = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: []
-    }
-  };
+  _.each(rawData, function (row) {
+    var feature = {
+      type: 'Feature',
+      properties: {
+      },
+      geometry: {
+        type: 'LineString',
+      }
+    };
 
-  feature.geometry.coordinates.push(
-    [rawData.pickup_latitude, rawData.pickup_longitude],
-    [rawData.dropoff_latitude, rawData.dropoff_longitude]
-  );
+    feature.geometry.coordinates = polyline.decode(row.direction);
+    featureCollection.features.push(feature);
+  });
 
-  featureCollection.features.push(feature);
-
-  callback(coordinates);
+  callback(featureCollection);
 }
