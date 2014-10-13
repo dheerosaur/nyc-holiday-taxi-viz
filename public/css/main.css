@@ -3,6 +3,35 @@ html, body, #map {
   margin: 0px;
   padding: 0px
 }
+
 body {
   position: relative;
+}
+
+.box {
+  position: absolute;
+  width: 340px;
+  padding: 20px;
+  background: rgba(0,0,0,.5);
+  border-radius: 5px;
+  color: #eee;
+}
+
+.box-heading {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.filters.box {
+  top: 10px;
+  left: 10px;
+}
+
+.airports {
+  margin-bottom: 10px;
+}
+
+.terminals {
+  display: none;
 }

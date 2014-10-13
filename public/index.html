@@ -4,13 +4,56 @@
   <title>NYC flight-taxi visualization</title>
 
   <link href="css/leaflet.css" type="text/css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
   <link href="css/main.css" type="text/css" rel="stylesheet">
 </head>
 <body>
   <div id="map"></div>
 
+  <div class="filters box">
+    <div class="airports">
+      <h4 class="box-heading">Airport</h4>
+      <label class="radio-inline">
+        <input type="radio" name='airport' value="JFK"> JFK
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name='airport' value="LGA"> LaGuardia
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name='airport' value="EWR"> Newark
+      </label>
+    </div>
+
+    <div class="terminals" id="JFK-terminals">
+      <h5>Terminal</h5>
+      <label class="checkbox-inline"> <input type="checkbox" value="T1"> T1 </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="T23"> T23 </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="T4"> T4 </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="T5"> T5 </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="T7"> T7 </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="T8"> T8 </label>
+    </div>
+    <div class="terminals" id="EWR-terminals">
+      <h5>Terminal</h5>
+      <label class="checkbox-inline"> <input type="checkbox" value="A"> A </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="B"> B </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="C"> C </label>
+    </div>
+    <div class="terminals" id="LGA-terminals">
+      <h5>Terminal</h5>
+      <label class="checkbox-inline"> <input type="checkbox" value="A"> A </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="B"> B </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="C"> C </label>
+      <label class="checkbox-inline"> <input type="checkbox" value="D"> D </label>
+    </div>
+  </div>
+
+  <div class="timer">
+  </div>
+
   <script src="js/underscore-min.js"></script>
   <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
   <script src="js/d3.v3.min.js"></script>
   <script src="js/leaflet.js"></script>		
   <script src="js/Polyline.encoded.js"></script>		

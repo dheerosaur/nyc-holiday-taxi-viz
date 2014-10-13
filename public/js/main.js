@@ -130,3 +130,14 @@ d3.json('/trip', function (data) {
   }
   */
 });
+
+
+$(function () {
+
+  $('.airports input').change(function () {
+    var airport = $(this).val();
+    $('.terminals').hide();
+    $('#' + airport + '-terminals').show();
+  });
+
+});
