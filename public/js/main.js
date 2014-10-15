@@ -36,7 +36,10 @@ function getLineFeature (trip, index) {
     properties: {
       key: index,
       terminal: trip.terminal,
-      passenters: trip.passenger_count
+      passenters: trip.passenger_count,
+      pickupTime: trip.pickup_datetime,
+      dropoffTime: trip.dropoff_datetime,
+      duration: trip.trip_time_in_secs
     },
     geometry: {
       type: 'LineString',
@@ -63,11 +66,29 @@ function updateQuery (query) {
     var feature = g.selectAll('path')
       .data(data.features)
       .enter().append('path')
-      .style('opacity', 1)
+      .style('opacity', 0)
       .attr('class', function (d) {
         return ('trip-' + d.properties.key) + ' ' +
                ('from-' + d.properties.terminal.slice(0, 3));
       });
+
+    function transition (d, i) {
+      var tl = this.getTotalLength();
+      d3.select(this)
+        .attr('stroke-dasharray', tl + ' ' + tl)
+        .attr('stroke-dashoffset', tl)
+        .style('opacity', .8)
+        .transition()
+        .duration(function (d) {
+          var duration = d.properties.duration;
+          return duration * 5;
+        })
+        .attr('stroke-dashoffset', 0);
+    }
+
+    setTimeout(function () {
+      g.selectAll('path').each(transition);
+    }, 1);
 
     map.on('viewreset', reset);
     reset();
