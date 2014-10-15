@@ -46,7 +46,7 @@ var columns = [
   , trip = sql.define({name: 'trips', columns: columns})
 
 function buildQuery(params) {
-  var query = trip.select(columns);
+  var query = trip.select(columns).limit(400);
   if (params.terminal) {
     query.where(trip.terminal.equals(params.terminal))
   }
