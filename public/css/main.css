@@ -35,3 +35,129 @@ body {
 .terminals {
   display: none;
 }
+
+
+svg {
+    position: relative;
+}
+path {
+    fill: none;
+    stroke-width: 2px;
+}
+
+  path.from-JFK {
+    stroke: #3f9;
+  }
+
+  path.from-LGA {
+    stroke: #fc0;
+  }
+
+  path.from-EWR {
+   stroke: #099;
+  }
+
+#marker {
+    fill: yellow;
+}
+
+.axis path,
+.axis line {
+      fill: none;
+      stroke: #FFF;
+      shape-rendering: crispEdges;
+      stroke-width:1;
+}
+
+.axis text {
+  stroke:white;
+}
+
+.area {
+  fill: #3366FF;
+}
+
+.empty {
+    fill: #000;
+}
+
+
+.navbar-inverse {
+    background-color:#F1F100;
+}
+
+.overlay {
+    position: relative;
+    top: 50%;
+    bottom: 0;
+    height: auto;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color:#333333;
+
+}
+
+.popup {
+    position: relative;
+    top: 50%;
+    bottom: 0;
+    height: auto;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color: #333333;
+    width: 60%%;
+    z-index: 10;
+    display:none;
+}
+
+.startPoint {
+    fill:rgba(84, 255, 84, 0.64);
+}
+
+.endPoint {
+    fill:rgba(219, 62, 62, 0.79);
+}
+
+.time {
+
+    font-size: 3em;
+}
+
+.readableTime {
+    position: relative;
+    top: -5px;
+}
+
+
+.date {
+    font-size: 18px;
+}
+
+.passengerGlyphs .glyphicon {
+    margin-right: 2px;
+}
+
+.passengerGlyphs {
+    width: 170px;
+    margin: 0 auto;
+}
+
+.markerLine {
+    stroke:yellow;
+}
+
+.legendItem svg {
+    height: 40px;
+    width: 40px;
+}
+.legendItem p {
+    display: inline-block;
+    position: relative;
+    top: -14px;
+    left:10px;
+}
+.legendItem {
+  height:32px;
+}
