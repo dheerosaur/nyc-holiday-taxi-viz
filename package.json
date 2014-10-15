@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "^4.9.7",
     "polyline": "0.0.3",
+    "sql": "^0.40.0",
     "sqlite3": "^3.0.2",
     "underscore": "^1.7.0"
   },

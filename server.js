@@ -1,4 +1,5 @@
 var fs = require('fs')
+  , sql = require('sql')
   , express = require('express')
   , polyline = require('polyline')
   , sqlite3 = require('sqlite3')
@@ -27,7 +28,7 @@ router.get('/trip', function (req, res, next) {
   var sql = buildQuery(req.query);
 
   db.serialize(function () {
-    db.all(sql, function (err, result) {
+    db.all(sql.text, sql.values, function (err, result) {
       if (err) { console.log(err); }
       res.json(result);
     });
@@ -38,34 +39,37 @@ app.use('/', router);
 app.listen(port);
 console.log('Listening on port ' + port);
 
+var columns = ['vendor_id', 'passenger_count', 'direction', 'terminal']
+  , trip = sql.define({name: 'trips', columns: columns})
+
 function buildQuery(params) {
-  var fields = ['vendor_id', 'passenger_count', 'direction', 'terminal'];
-  var sql = 'select ' + fields.join() + ' from `trips`';
-  if ( !_.isEmpty(params) ) {
-    var conditions = _.map(_.pairs(params), function (x) {
-      return x[0] + '="' + x[1] + '"';
-    });
-    sql = sql + ' WHERE ' + conditions;
+  var query = trip.select(columns);
+  if (params.terminal) {
+    query.where(trip.terminal.equals(params.terminal))
   }
-  console.log(sql);
-  return sql;
+  return query.toQuery();
 }
 
 function createGeojson(rawData, callback) {
 
   featureCollection.features = [];
 
-  _.each(rawData, function (row) {
+  _.each(rawData, function (row, index) {
     var feature = {
       type: 'Feature',
       properties: {
+        key: index,
+        passenger: row.passenger_count
       },
       geometry: {
         type: 'LineString',
       }
     };
 
-    feature.geometry.coordinates = polyline.decode(row.direction);
+    feature.geometry.coordinates = _.map(
+      polyline.decode(row.direction),
+      function (x) { return [x[1], x[0]]; }
+    );
     featureCollection.features.push(feature);
   });
 
