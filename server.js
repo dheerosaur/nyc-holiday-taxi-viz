@@ -48,8 +48,8 @@ var columns = [
 
 function buildQuery(params) {
   var query = trip.select(columns);
-  if (params.terminal) {
-    query.where(trip.terminal.equals(params.terminal));
+  if (params.terminals) {
+    query.where(trip.terminal.in(params.terminals));
   }
   if (params.startDate) {
     query.where(trip.pickup_datetime.gte(params.startDate));

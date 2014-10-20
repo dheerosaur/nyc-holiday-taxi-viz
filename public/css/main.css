@@ -183,3 +183,7 @@ circle {
 .faster {
   margin-left: 20px;
 }
+
+#terminals label {
+  color: #444;
+}

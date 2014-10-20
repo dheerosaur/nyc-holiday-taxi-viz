@@ -5,6 +5,7 @@
 
   <link href="css/leaflet.css" type="text/css" rel="stylesheet">
   <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
+  <link href="css/bootstrap-multiselect.css" type="text/css" rel="stylesheet">
   <link href="css/main.css" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -30,38 +31,26 @@
   <div class="filters box">
     <div class="airports">
       <h4 class="box-heading">Airport</h4>
-      <label class="radio-inline">
-        <input type="radio" name='airport' value="JFK"> JFK
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name='airport' value="LGA"> LaGuardia
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name='airport' value="EWR"> Newark
-      </label>
-    </div>
-
-    <div class="terminals" id="JFK-terminals">
-      <h5>Terminal</h5>
-      <label class="radio-inline"> <input name="t" type="radio" value="T1"> T1 </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="T23"> T23 </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="T4"> T4 </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="T5"> T5 </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="T7"> T7 </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="T8"> T8 </label>
-    </div>
-    <div class="terminals" id="EWR-terminals">
-      <h5>Terminal</h5>
-      <label class="radio-inline"> <input name="t" type="radio" value="A"> A </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="B"> B </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="C"> C </label>
-    </div>
-    <div class="terminals" id="LGA-terminals">
-      <h5>Terminal</h5>
-      <label class="radio-inline"> <input name="t" type="radio" value="A"> A </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="B"> B </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="C"> C </label>
-      <label class="radio-inline"> <input name="t" type="radio" value="D"> D </label>
+      <select id="terminals" multiple="multiple">
+        <optgroup label="JFK">
+          <option value="JFK T1">JFK T1</option>
+          <option value="JFK T23">JFK T23</option>
+          <option value="JFK T4">JFK T4</option>
+          <option value="JFK T5">JFK T5</option>
+          <option value="JFK T7">JFK T7</option>
+          <option value="JFK T8">JFK T8</option>
+        </optgroup>
+        <optgroup label="LGA">
+          <option value="LGA A">LGA A</option>
+          <option value="LGA B">LGA B</option>
+          <option value="LGA C">LGA C</option>
+        </optgroup>
+        <optgroup label="EWR">
+          <option value="EWR A">EWR A</option>
+          <option value="EWR B">EWR B</option>
+          <option value="EWR C">EWR C</option>
+        </optgroup>
+      </select>
     </div>
 
     <br><button type="button" class="btn btn-default submit">Submit</button>
@@ -74,6 +63,7 @@
   <script src="js/underscore-min.js"></script>
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-multiselect.js"></script>
   <script src="js/moment.min.js"></script>
   <script src="js/d3.v3.min.js"></script>
   <script src="js/leaflet.js"></script>		

@@ -16,20 +16,29 @@ var svg = d3.select(map.getPanes().overlayPane).append("svg")
   , transform = d3.geo.transform({ point: projectPoint })
   , d3path = d3.geo.path().projection(transform);
 
-function translatePoint(d) {
-    var point = map.latLngToLayerPoint(new L.LatLng(d[1],d[0]));  
+/* Functions */
+
+  function translatePoint(d) {
+    var point = map.latLngToLayerPoint(new L.LatLng(d[1],d[0]));
     return "translate(" + point.x + "," + point.y + ")";
-}
+  }
 
-function projectPoint (x, y) {
-  var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-  this.stream.point(point.x, point.y);
-}
+  function coordToLatLon(coord) {
+    var point = map.layerPointToLatLng(new L.Point(coord[0], coord[1]));
+    return point;
+  }
 
-function getNYCTime (s) {
-  var formatted = s.replace(' ', 'T') + '-05:00';
-  return new Date(formatted);
-}
+  function projectPoint (x, y) {
+    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+    this.stream.point(point.x, point.y);
+  }
+
+  function getNYCTime (s) {
+    var formatted = s.replace(' ', 'T') + '-05:00';
+    return new Date(formatted);
+  }
+
+/* End utility functions */
 
 function getLineFeature (trip, index) {
   var coordinates = L.PolylineUtil.decode(trip.direction);
@@ -52,11 +61,12 @@ function getLineFeature (trip, index) {
   }
 }
 
-var time = moment(), timeFactor = 5
+var time = moment()
+  , timeFactor = 5
   , timer = setTimeout(function () {}, 1);
 
 function updateTimer () {
-  time.add('minutes', 1);
+  time.add(1, 'minutes');
   $('.readableTime').text(time.format('hh:mm a'));
   $('.date').text(time.format('dddd, MMMM Do YYYY'));
   timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
@@ -116,7 +126,7 @@ function fetchNewData (url) {
             , i = d3.interpolateString('0,' + l, l + ',' + l);
           return function (t) {
             var p = path.getPointAtLength(t * l);
-            marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')');
+            marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
             return i(t);
           };
         });
@@ -146,53 +156,44 @@ function fetchNewData (url) {
         .style("top", topLeft[1] - 50 + "px");
       g.attr("transform", "translate(" + (-topLeft[0]+50) + "," + (-topLeft[1]+50)+ ")");
       feature.attr("d", d3path);
-
-      g.selectAll('circle').attr('transform', function (d) {
-        return translatePoint(d);
-      });
     }
   });
 }
 
-setTimeout(function () {
-  var startDate = '2013-12-22 00:00:00'
-    , endDate = '2013-12-23 00:00:00';
+var startDate = '2013-12-22 00:00:00'
+  , endDate = '2013-12-23 00:00:00';
 
+setTimeout(function () {
   updateQuery({
     startDate: startDate,
     endDate: endDate
   });
 }, 500);
 
-$('.slower').click(function () {
-  if (timeFactor > 1) timeFactor -= 1;
-  $('.timeFactor').html(timeFactor);
-});
-
-$('.faster').click(function () {
-  timeFactor += 1;
-  $('.timeFactor').html(timeFactor);
-});
-
 $(function () {
 
   $('.timeFactor').html(timeFactor);
 
-  $('.airports input').change(function () {
-    var airport = $(this).val();
-    $('.terminals').hide();
-    $('.terminals input').removeAttr('checked');
-    $('#' + airport + '-terminals').show();
+  $('.slower').click(function () {
+    if (timeFactor > 1) timeFactor -= 1;
+    $('.timeFactor').html(timeFactor);
   });
 
+  $('.faster').click(function () {
+    timeFactor += 1;
+    $('.timeFactor').html(timeFactor);
+  });
+
+  $('#terminals').multiselect();
+
   $('.filters .submit').click(function () {
-    var airport = $('input[name=airport]:checked').val()
-      , terminal = $('.terminals input:checked').val();
-    $(this).css('color', 'black');
-    if (airport && terminal) {
-      updateQuery({'terminal': airport + ' ' + terminal});
-    } else {
-      $(this).css('color', '#d33030');
+    var terminals = $('#terminals').val();
+    if (terminals) {
+      updateQuery({
+        terminals: terminals,
+        startDate: startDate,
+        endDate: endDate
+      });
     }
   });
 
