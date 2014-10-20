@@ -57,6 +57,7 @@ function buildQuery(params) {
   if (params.endDate) {
     query.where(trip.pickup_datetime.lte(params.endDate));
   }
+  // query = query.order(trip.pickup_datetime);
   return query.toQuery();
 }
 

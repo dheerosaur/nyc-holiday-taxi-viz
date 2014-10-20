@@ -170,3 +170,8 @@ circle {
 .legendItem {
   height:32px;
 }
+
+.date,
+.readableTime {
+  color: #f6f6f6;
+}

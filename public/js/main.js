@@ -12,7 +12,9 @@ L.control.zoom({ position: 'topright' }).addTo(map);
 
 
 var svg = d3.select(map.getPanes().overlayPane).append("svg")
-  , g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  , g = svg.append("g").attr("class", "leaflet-zoom-hide")
+  , transform = d3.geo.transform({ point: projectPoint })
+  , d3path = d3.geo.path().projection(transform);
 
 function translatePoint(d) {
     var point = map.latLngToLayerPoint(new L.LatLng(d[1],d[0]));  
@@ -24,8 +26,10 @@ function projectPoint (x, y) {
   this.stream.point(point.x, point.y);
 }
 
-var transform = d3.geo.transform({ point: projectPoint })
-  , d3path = d3.geo.path().projection(transform);
+function getNYCTime (s) {
+  var formatted = s.replace(' ', 'T') + '-05:00';
+  return new Date(formatted);
+}
 
 function getLineFeature (trip, index) {
   var coordinates = L.PolylineUtil.decode(trip.direction);
@@ -48,16 +52,34 @@ function getLineFeature (trip, index) {
   }
 }
 
+var time = moment(), timeFactor = 5
+  , timer = setTimeout(function () {}, 1);
+
+function updateTimer () {
+  time.add('minutes', 1);
+  $('.readableTime').text(time.format('hh:mm a'));
+  $('.date').text(time.format('dddd, MMMM Do YYYY'));
+  timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
+}
+
 function updateQuery (query) {
   if (_.isUndefined(query)) query = {};
   var url = '/trip?' + $.param(query);
   
-  var startDate = getNYCTime(query.startDate)
-    , endDate = getNYCTime(query.endDate);
+  fetchNewData(url);
+}
 
+function fetchNewData (url) {
   d3.json(url, function (rawData) {
     g.selectAll('path').remove();
     if (rawData.length === 0) return;
+
+    var startDate = getNYCTime(rawData[0].pickup_datetime)
+      , totalPaths = rawData.length, drawn = 0;
+
+    time = moment(startDate).zone('-05:00');
+    clearTimeout(timer);
+    updateTimer();
 
     var data = {
       type: 'FeatureCollection',
@@ -82,10 +104,12 @@ function updateQuery (query) {
         .transition()
         .duration(function (d) {
           var duration = d.properties.duration;
-          return duration * 5;
+          return duration * 1000 / ( 60 * timeFactor);
         })
-        .each('end', function () {
+        .each('end', function (d) {
           d3.select(this).remove();
+          drawn = drawn + 1;
+          // fetch for the next day
         })
         .attrTween('stroke-dasharray', function () {
           var l = path.getTotalLength()
@@ -101,8 +125,9 @@ function updateQuery (query) {
     g.selectAll('path').each(function (d, i) {
       var path = this
         , pickup = getNYCTime(d.properties.pickupTime)
-        , after = (pickup - startDate) / 2000;
+        , after = (pickup - startDate) / (60 * timeFactor);
       setTimeout(function () {
+        time = moment(pickup).zone('-05:00');
         transition.call(path, d, i);
       }, after);
     });
@@ -127,17 +152,9 @@ function updateQuery (query) {
       });
     }
   });
-
 }
 
-function getNYCTime (s) {
-  var formatted = s.replace(' ', 'T') + '-05:00';
-  return new Date(formatted);
-}
-
-// updateQuery();
-
-$(function () {
+setTimeout(function () {
   var startDate = '2013-12-22 00:00:00'
     , endDate = '2013-12-23 00:00:00';
 
@@ -145,6 +162,21 @@ $(function () {
     startDate: startDate,
     endDate: endDate
   });
+}, 500);
+
+$('.slower').click(function () {
+  if (timeFactor > 1) timeFactor -= 1;
+  $('.timeFactor').html(timeFactor);
+});
+
+$('.faster').click(function () {
+  timeFactor += 1;
+  $('.timeFactor').html(timeFactor);
+});
+
+$(function () {
+
+  $('.timeFactor').html(timeFactor);
 
   $('.airports input').change(function () {
     var airport = $(this).val();
