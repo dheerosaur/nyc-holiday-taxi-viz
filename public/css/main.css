@@ -10,7 +10,7 @@ body {
 
 .box {
   position: absolute;
-  width: 340px;
+  width: 300px;
   padding: 20px;
   background: rgba(0,0,0,.5);
   border-radius: 5px;
@@ -174,4 +174,12 @@ circle {
 .date,
 .readableTime {
   color: #f6f6f6;
+  margin-bottom: 5px;
+}
+
+.datetime-box .controls {
+  margin-top: 10px;
+}
+.faster {
+  margin-left: 20px;
 }
