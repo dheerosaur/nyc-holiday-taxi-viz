@@ -63,7 +63,8 @@ function getLineFeature (trip, index) {
 
 var time = moment()
   , timeFactor = 5
-  , timer = setTimeout(function () {}, 1);
+  , timer = setTimeout(function () {}, 1)
+  , queryTime;
 
 function updateTimer () {
   time.add(1, 'minutes');
@@ -75,7 +76,11 @@ function updateTimer () {
 function updateQuery (query) {
   if (_.isUndefined(query)) query = {};
   var url = '/trip?' + $.param(query);
+  queryTime = new Date();
   
+  g.selectAll('path').transition(0);
+  g.selectAll('circle').remove();
+
   fetchNewData(url);
 }
 
@@ -133,10 +138,11 @@ function fetchNewData (url) {
     }
 
     g.selectAll('path').each(function (d, i) {
-      var path = this
+      var path = this, lastQueryTime = queryTime
         , pickup = getNYCTime(d.properties.pickupTime)
         , after = (pickup - startDate) / (60 * timeFactor);
       setTimeout(function () {
+        if (lastQueryTime !== queryTime) return;
         time = moment(pickup).zone('-05:00');
         transition.call(path, d, i);
       }, after);
