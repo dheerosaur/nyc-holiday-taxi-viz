@@ -46,9 +46,13 @@ var columns = [
   , trip = sql.define({name: 'trips', columns: columns})
 
 function buildQuery(params) {
-  var query = trip.select(columns).limit(400);
+  var query = trip.select(columns);
   if (params.terminal) {
-    query.where(trip.terminal.equals(params.terminal))
+    query.where(trip.terminal.equals(params.terminal));
+  } else if (params.startDate) {
+    query.where(trip.pickup_datetime.gte(params.startDate));
+  } else if (params.endDate) {
+    query.where(trip.pickup_datetime.lte(params.endDate));
   }
   return query.toQuery();
 }
