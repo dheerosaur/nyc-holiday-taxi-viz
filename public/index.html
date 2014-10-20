@@ -10,6 +10,24 @@
 <body>
   <div id="map"></div>
 
+  <div class="datetime-box box">
+    <div class="date"></div>
+    <div class="time">
+      <span class="glyphicon glyphicon-time"></span>
+      <span class="readableTime"></span>
+    </div>
+    <div class= "controls">
+      <button type="button" class="btn btn-default slower">
+        <span class="glyphicon glyphicon-backward"></span> Slower
+      </button>
+      <button type="button" class="btn btn-default faster">
+        Faster <span class="glyphicon glyphicon-forward"></span>
+      </button>
+    </div>
+
+    <div>Time Factor: <span class = "timeFactor"></span> minutes per second</div>
+  </div>
+
   <div class="filters box">
     <div class="airports">
       <h4 class="box-heading">Airport</h4>
@@ -47,8 +65,8 @@
       <label class="radio-inline"> <input name="t" type="radio" value="D"> D </label>
     </div>
 
-    <br>
-    <button type="button" class="btn btn-default submit">Submit</button>
+    <br><button type="button" class="btn btn-default submit">Submit</button>
+
   </div>
 
   <div class="timer">

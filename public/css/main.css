@@ -23,8 +23,13 @@ body {
   font-weight: bold;
 }
 
-.filters.box {
+.datetime-box.box {
   top: 10px;
+  left: 10px;
+}
+
+.filters.box {
+  top: 300px;
   left: 10px;
 }
 
