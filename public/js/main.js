@@ -27,8 +27,6 @@ function projectPoint (x, y) {
 var transform = d3.geo.transform({ point: projectPoint })
   , d3path = d3.geo.path().projection(transform);
 
-var options =  {weight: 2, opacity: .8}
-
 function getLineFeature (trip, index) {
   var coordinates = L.PolylineUtil.decode(trip.direction);
   return {
@@ -58,13 +56,13 @@ function updateQuery (query) {
     , endDate = getNYCTime(query.endDate);
 
   d3.json(url, function (rawData) {
+    g.selectAll('path').remove();
+    if (rawData.length === 0) return;
 
     var data = {
       type: 'FeatureCollection',
       features: _.map(rawData, getLineFeature)
     };
-
-    g.selectAll('path').remove();
 
     var feature = g.selectAll('path')
       .data(data.features)
@@ -77,7 +75,7 @@ function updateQuery (query) {
 
     function transition (d, i) {
       var path = this;
-      var marker = g.append('circle').attr('r', 4);
+      var marker = g.append('circle').attr('r', 3);
 
       d3.select(path)
         .style('opacity', .6)
@@ -103,7 +101,7 @@ function updateQuery (query) {
     g.selectAll('path').each(function (d, i) {
       var path = this
         , pickup = getNYCTime(d.properties.pickupTime)
-        , after = (pickup - startDate) / 1000;
+        , after = (pickup - startDate) / 2000;
       setTimeout(function () {
         transition.call(path, d, i);
       }, after);
@@ -121,10 +119,12 @@ function updateQuery (query) {
         .attr("height", bottomRight[1] - topLeft[1] + 100)
         .style("left", topLeft[0] - 50 + "px")
         .style("top", topLeft[1] - 50 + "px");
-
       g.attr("transform", "translate(" + (-topLeft[0]+50) + "," + (-topLeft[1]+50)+ ")");
-
       feature.attr("d", d3path);
+
+      g.selectAll('circle').attr('transform', function (d) {
+        return translatePoint(d);
+      });
     }
   });
 
@@ -138,8 +138,8 @@ function getNYCTime (s) {
 // updateQuery();
 
 $(function () {
-  var startDate = '2013-12-25 00:00:00'
-    , endDate = '2013-12-26 00:00:00';
+  var startDate = '2013-12-22 00:00:00'
+    , endDate = '2013-12-23 00:00:00';
 
   updateQuery({
     startDate: startDate,

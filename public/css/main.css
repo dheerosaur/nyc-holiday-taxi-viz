@@ -61,6 +61,7 @@ circle {
     fill: yellow;
     stroke: #444;
     stroke-width: 1px;
+    opacity: .8;
 }
 
 
