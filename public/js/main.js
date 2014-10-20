@@ -36,7 +36,7 @@ function getLineFeature (trip, index) {
     properties: {
       key: index,
       terminal: trip.terminal,
-      passenters: trip.passenger_count,
+      passengers: trip.passenger_count,
       pickupTime: trip.pickup_datetime,
       dropoffTime: trip.dropoff_datetime,
       duration: trip.trip_time_in_secs
@@ -80,7 +80,7 @@ function updateQuery (query) {
       var marker = g.append('circle').attr('r', 4);
 
       d3.select(path)
-        .style('opacity', .5)
+        .style('opacity', .6)
         .transition()
         .duration(function (d) {
           var duration = d.properties.duration;
@@ -99,13 +99,6 @@ function updateQuery (query) {
           };
         });
     }
-
-    function tweenDash () {
-    }
-
-    //setTimeout(function () {
-      //g.selectAll('path').each(transition);
-    //}, 1);
 
     g.selectAll('path').each(function (d, i) {
       var path = this
@@ -146,7 +139,7 @@ function getNYCTime (s) {
 
 $(function () {
   var startDate = '2013-12-25 00:00:00'
-    , endDate = '2013-12-25 02:00:00';
+    , endDate = '2013-12-26 00:00:00';
 
   updateQuery({
     startDate: startDate,
