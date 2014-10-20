@@ -57,9 +57,12 @@ path {
    stroke: #099;
   }
 
-#marker {
+circle {
     fill: yellow;
+    stroke: #444;
+    stroke-width: 1px;
 }
+
 
 .axis path,
 .axis line {

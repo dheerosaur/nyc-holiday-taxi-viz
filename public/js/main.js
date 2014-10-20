@@ -76,19 +76,31 @@ function updateQuery (query) {
       });
 
     function transition (d, i) {
-      var tl = this.getTotalLength();
-      d3.select(this)
-        .attr('stroke-dasharray', tl + ' ' + tl)
-        .attr('stroke-dashoffset', tl)
-        .style('opacity', .8)
+      var path = this;
+      var marker = g.append('circle').attr('r', 4);
+
+      d3.select(path)
+        .style('opacity', .5)
         .transition()
         .duration(function (d) {
           var duration = d.properties.duration;
-          return duration * 20;
+          return duration * 5;
         })
-        .attr('stroke-dashoffset', 0)
         .each('end', function () {
+          d3.select(this).remove();
+        })
+        .attrTween('stroke-dasharray', function () {
+          var l = path.getTotalLength()
+            , i = d3.interpolateString('0,' + l, l + ',' + l);
+          return function (t) {
+            var p = path.getPointAtLength(t * l);
+            marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')');
+            return i(t);
+          };
         });
+    }
+
+    function tweenDash () {
     }
 
     //setTimeout(function () {
@@ -98,7 +110,7 @@ function updateQuery (query) {
     g.selectAll('path').each(function (d, i) {
       var path = this
         , pickup = getNYCTime(d.properties.pickupTime)
-        , after = (pickup - startDate) / 5000;
+        , after = (pickup - startDate) / 1000;
       setTimeout(function () {
         transition.call(path, d, i);
       }, after);
