@@ -53,6 +53,9 @@ function getLineFeature (trip, index) {
 function updateQuery (query) {
   if (_.isUndefined(query)) query = {};
   var url = '/trip?' + $.param(query);
+  
+  var startDate = getNYCTime(query.startDate)
+    , endDate = getNYCTime(query.endDate);
 
   d3.json(url, function (rawData) {
 
@@ -81,14 +84,25 @@ function updateQuery (query) {
         .transition()
         .duration(function (d) {
           var duration = d.properties.duration;
-          return duration * 5;
+          return duration * 20;
         })
-        .attr('stroke-dashoffset', 0);
+        .attr('stroke-dashoffset', 0)
+        .each('end', function () {
+        });
     }
 
-    setTimeout(function () {
-      g.selectAll('path').each(transition);
-    }, 1);
+    //setTimeout(function () {
+      //g.selectAll('path').each(transition);
+    //}, 1);
+
+    g.selectAll('path').each(function (d, i) {
+      var path = this
+        , pickup = getNYCTime(d.properties.pickupTime)
+        , after = (pickup - startDate) / 5000;
+      setTimeout(function () {
+        transition.call(path, d, i);
+      }, after);
+    });
 
     map.on('viewreset', reset);
     reset();
@@ -111,9 +125,21 @@ function updateQuery (query) {
 
 }
 
-updateQuery();
+function getNYCTime (s) {
+  var formatted = s.replace(' ', 'T') + '-05:00';
+  return new Date(formatted);
+}
+
+// updateQuery();
 
 $(function () {
+  var startDate = '2013-12-25 00:00:00'
+    , endDate = '2013-12-25 02:00:00';
+
+  updateQuery({
+    startDate: startDate,
+    endDate: endDate
+  });
 
   $('.airports input').change(function () {
     var airport = $(this).val();

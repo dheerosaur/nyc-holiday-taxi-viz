@@ -26,6 +26,7 @@ app.all('*', function (req, res, next) {
 
 router.get('/trip', function (req, res, next) {
   var sql = buildQuery(req.query);
+  console.log(sql);
 
   db.serialize(function () {
     db.all(sql.text, sql.values, function (err, result) {
@@ -49,12 +50,14 @@ function buildQuery(params) {
   var query = trip.select(columns);
   if (params.terminal) {
     query.where(trip.terminal.equals(params.terminal));
-  } else if (params.startDate) {
+  }
+  if (params.startDate) {
     query.where(trip.pickup_datetime.gte(params.startDate));
-  } else if (params.endDate) {
+  } 
+  if (params.endDate) {
     query.where(trip.pickup_datetime.lte(params.endDate));
   }
-  return query.toQuery();
+  return query.limit(30).toQuery();
 }
 
 function createGeojson(rawData, callback) {
