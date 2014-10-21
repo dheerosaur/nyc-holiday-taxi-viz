@@ -91,9 +91,14 @@ path {
 
 circle {
   fill: yellow;
-  stroke: #444;
-  stroke-width: 1px;
+  stroke-width: 0;
   opacity: .8;
+}
+
+circle.LGA {
+  fill: #F0967B;
+  stroke: red;
+  stroke-width: 1;
 }
 
 .axis path,

@@ -70,7 +70,7 @@ function getLineFeature (trip, index) {
 }
 
 var time = moment()
-  , timeFactor = 5
+  , timeFactor = 10
   , timer = setTimeout(function () {}, 1)
   , queryTime
   , counts = {};
@@ -91,8 +91,9 @@ function updateCounts (props) {
 }
 
 function pathTransition (d, i) {
-  var path = this;
-  var marker = g.append('circle').attr('r', 3);
+  var path = this
+    , airport = d.properties.terminal.split(' ')[0];
+  var marker = g.append('circle').attr({r: 3, 'class': airport});
 
   d3.select(path)
     .style('opacity', .8)
