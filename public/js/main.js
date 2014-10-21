@@ -72,7 +72,8 @@ function getLineFeature (trip, index) {
 var time = moment()
   , timeFactor = 5
   , timer = setTimeout(function () {}, 1)
-  , queryTime;
+  , queryTime
+  , counts = {};
 
 function updateTimer () {
   time.add(1, 'minutes');
@@ -82,11 +83,44 @@ function updateTimer () {
   timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
 }
 
+function updateCounts (props) {
+  if (_.isEmpty(counts)) return;
+  var cls = 'count-' + props.terminal.replace(' ', '-');
+  counts[cls]++;
+  $('.' + cls).text(counts[cls]);
+}
+
+function pathTransition (d, i) {
+  var path = this;
+  var marker = g.append('circle').attr('r', 3);
+
+  d3.select(path)
+    .style('opacity', .8)
+    .transition()
+    .duration(function (d) {
+      var duration = d.properties.duration;
+      return duration * 1000 / ( 60 * timeFactor);
+    })
+    .each('end', function (d) {
+      d3.select(this).remove();
+      updateCounts(d.properties);
+    })
+    .attrTween('stroke-dasharray', function () {
+      var l = path.getTotalLength()
+        , i = d3.interpolateString('0,' + l, l + ',' + l);
+      return function (t) {
+        var p = path.getPointAtLength(t * l);
+        marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
+        return i(t);
+      };
+    });
+}
+
 function animatePaths (rawData) {
   g.selectAll('path').remove();
   if (rawData.length === 0) return;
 
-  var startDate = getNYCTime(rawData[0].pickup_datetime)
+  var startTime = getNYCTime(rawData[0].pickup_datetime)
     , totalPaths = rawData.length, drawn = 0;
 
   time = moment(startDate).zone('-05:00');
@@ -107,41 +141,14 @@ function animatePaths (rawData) {
              ('from-' + d.properties.terminal.slice(0, 3));
     });
 
-  function transition (d, i) {
-    var path = this;
-    var marker = g.append('circle').attr('r', 3);
-
-    d3.select(path)
-      .style('opacity', .6)
-      .transition()
-      .duration(function (d) {
-        var duration = d.properties.duration;
-        return duration * 1000 / ( 60 * timeFactor);
-      })
-      .each('end', function (d) {
-        d3.select(this).remove();
-        drawn = drawn + 1;
-        // fetch for the next day
-      })
-      .attrTween('stroke-dasharray', function () {
-        var l = path.getTotalLength()
-          , i = d3.interpolateString('0,' + l, l + ',' + l);
-        return function (t) {
-          var p = path.getPointAtLength(t * l);
-          marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-          return i(t);
-        };
-      });
-  }
-
   g.selectAll('path').each(function (d, i) {
     var path = this, lastQueryTime = queryTime
       , pickup = getNYCTime(d.properties.pickupTime)
-      , after = (pickup - startDate) / (60 * timeFactor);
+      , after = (pickup - startTime) / (60 * timeFactor);
     setTimeout(function () {
       if (lastQueryTime !== queryTime) return;
       time = moment(pickup).zone('-05:00');
-      transition.call(path, d, i);
+      pathTransition.call(path, d, i);
     }, after);
   });
 
@@ -166,6 +173,19 @@ function updateQuery (query) {
   if (_.isUndefined(query)) query = {};
   var url = '/trip?' + $.param(query);
   queryTime = new Date();
+
+  counts = {};
+  $('.stats').hide();
+  $('.terminal-stats').empty();
+  if (query.terminals) {
+    _.each(query.terminals, function (t) {
+      var cls = 'count-' + t.replace(' ', '-');
+      $('<li>' + t + '<span class="' + cls + '">0</span></li>')
+        .appendTo('.terminal-stats');
+      counts[cls] = 0;
+    });
+    $('.stats').show();
+  }
   
   g.selectAll('path').transition(0);
   g.selectAll('circle').remove();

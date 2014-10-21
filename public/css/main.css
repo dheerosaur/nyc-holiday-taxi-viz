@@ -194,3 +194,19 @@ circle {
 .multiselect-item label {
   color: #444;
 }
+
+.stats.box {
+  top: 425px;
+  left: 10px;
+  display: none;
+}
+
+.terminal-stats li {
+  clear: both;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.terminal-stats li span {
+  display: block;
+  float: right;
+}
