@@ -77,7 +77,8 @@ var time = moment()
 function updateTimer () {
   time.add(1, 'minutes');
   $('.readableTime').text(time.format('hh:mm a'));
-  $('.date').text(time.format('dddd, MMMM Do YYYY'));
+  $('.date').text(time.format('DD'));
+  $('.month').text(time.format('MMM'));
   timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
 }
 
@@ -187,6 +188,12 @@ $(function () {
   $('.timeFactor').html(timeFactor);
 
   $('#terminals').multiselect();
+
+  $('.input-daterange').datepicker({
+    format: 'yyyy-mm-dd',
+    startDate: '2013-12-20',
+    endDate: '2013-12-30'
+  });
 
   $('.slower').click(function () {
     if (timeFactor > 1) timeFactor -= 1;

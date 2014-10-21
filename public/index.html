@@ -6,18 +6,21 @@
   <link href="css/leaflet.css" type="text/css" rel="stylesheet">
   <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
   <link href="css/bootstrap-multiselect.css" type="text/css" rel="stylesheet">
+  <link href="css/datepicker3.css" type="text/css" rel="stylesheet">
   <link href="css/main.css" type="text/css" rel="stylesheet">
 </head>
 <body>
   <div id="map"></div>
 
   <div class="datetime-box box">
-    <div class="date"></div>
-    <div class="time">
-      <span class="glyphicon glyphicon-time"></span>
-      <span class="readableTime"></span>
+    <div class="date-left">
+      <div class="date">DD</div>
+      <div class="month">MMM</div>
     </div>
-    <div>Time Factor: <span class = "timeFactor"></span> minutes per second</div>
+    <div class="date-right">
+      <span class="readableTime">00:00 am</span>
+      <div class="date-speed">Speed: <span class = "timeFactor"></span> mins per second</div>
+    </div>
     <div class= "controls">
       <button type="button" class="btn btn-default slower">
         <span class="glyphicon glyphicon-backward"></span> Slower
@@ -53,6 +56,13 @@
       </select>
     </div>
 
+    <h4 class="box-heading">Dates</h4>
+    <div class="input-daterange input-group">
+      <input type="text" class="form-control" name="startDate" value="2013-12-21" />
+        <span class="input-group-addon">..</span>
+      <input type="text" class="form-control" name="endDate" value="2013-12-24" />
+    </div>
+
     <br><button type="button" class="btn btn-default submit">Submit</button>
 
   </div>
@@ -64,6 +74,7 @@
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-multiselect.js"></script>
+  <script src="js/bootstrap-datepicker.js"></script>
   <script src="js/moment.min.js"></script>
   <script src="js/d3.v3.min.js"></script>
   <script src="js/leaflet.js"></script>		

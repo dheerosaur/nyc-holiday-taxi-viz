@@ -8,6 +8,29 @@ body {
   position: relative;
 }
 
+.form-control,
+.btn-default {
+  color: #eee;
+  background-color: rgba(0,0,0,.4);
+  border-color: rgba(102,175,234,.4);
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
+}
+.form-control:hover, .form-control:focus, .form-control:active,
+.btn-default:hover, .btn-default:focus, .btn-default:active {
+  color: #eee;
+  background-color: rgba(0,0,0,.8);
+  border-color: rgba(102,175,234,.8);
+}
+
+.input-daterange .input-group-addon {
+  padding: 4px 8px;
+  color: #ccc;
+  background-color: transparent;
+  border-color: transparent;
+}
+
 .box {
   position: absolute;
   width: 300px;
@@ -29,18 +52,22 @@ body {
 }
 
 .filters.box {
-  top: 300px;
+  top: 180px;
   left: 10px;
 }
 
 .airports {
   margin-bottom: 10px;
 }
+  .airports .btn-group,
+  .airports .multiselect {
+    width: 100%;
+    text-align: left;
+  }
 
-.terminals {
-  display: none;
-}
-
+  .airports .multiselect .caret {
+    display: none;
+  }
 
 svg {
     position: relative;
@@ -63,12 +90,11 @@ path {
   }
 
 circle {
-    fill: yellow;
-    stroke: #444;
-    stroke-width: 1px;
-    opacity: .8;
+  fill: yellow;
+  stroke: #444;
+  stroke-width: 1px;
+  opacity: .8;
 }
-
 
 .axis path,
 .axis line {
@@ -90,100 +116,81 @@ circle {
     fill: #000;
 }
 
-
-.navbar-inverse {
-    background-color:#F1F100;
-}
-
-.overlay {
-    position: relative;
-    top: 50%;
-    bottom: 0;
-    height: auto;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    color:#333333;
-
-}
-
-.popup {
-    position: relative;
-    top: 50%;
-    bottom: 0;
-    height: auto;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    color: #333333;
-    width: 60%%;
-    z-index: 10;
-    display:none;
-}
-
-.startPoint {
-    fill:rgba(84, 255, 84, 0.64);
-}
-
-.endPoint {
-    fill:rgba(219, 62, 62, 0.79);
-}
-
 .time {
-
-    font-size: 3em;
+  font-size: 3em;
 }
 
 .readableTime {
-    position: relative;
-    top: -5px;
+  position: relative;
+  top: -5px;
 }
 
 
 .date {
-    font-size: 18px;
-}
-
-.passengerGlyphs .glyphicon {
-    margin-right: 2px;
-}
-
-.passengerGlyphs {
-    width: 170px;
-    margin: 0 auto;
-}
-
-.markerLine {
-    stroke:yellow;
+  font-size: 18px;
 }
 
 .legendItem svg {
-    height: 40px;
-    width: 40px;
+  height: 40px;
+  width: 40px;
 }
 .legendItem p {
-    display: inline-block;
-    position: relative;
-    top: -14px;
-    left:10px;
+  display: inline-block;
+  position: relative;
+  top: -14px;
+  left:10px;
 }
 .legendItem {
   height:32px;
 }
 
-.date,
-.readableTime {
+.date-left,
+.date-right {
+  display: inline-block;
   color: #f6f6f6;
   margin-bottom: 5px;
+  vertical-align: top;
+}
+
+.date-left {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.date-right {
+  margin-left: 10px;
+}
+
+.date {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 24px;
+}
+
+.month {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.readableTime {
+  font-size: 46px;
+  line-height: 50px;
+}
+
+.date-speed {
+  text-align: center;
+  color: #ccc;
 }
 
 .datetime-box .controls {
   margin-top: 10px;
 }
 .faster {
-  margin-left: 20px;
+  float: right;
 }
 
-#terminals label {
+.multiselect-item label {
   color: #444;
 }
