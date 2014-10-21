@@ -125,11 +125,6 @@ circle.LGA {
   font-size: 3em;
 }
 
-.readableTime {
-  position: relative;
-  top: -5px;
-}
-
 
 .date {
   font-size: 18px;
@@ -180,8 +175,10 @@ circle.LGA {
 }
 
 .readableTime {
+  position: relative;
+  top: -3px;
   font-size: 46px;
-  line-height: 50px;
+  line-height: 46px;
 }
 
 .date-speed {

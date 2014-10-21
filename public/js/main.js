@@ -124,7 +124,7 @@ function animatePaths (rawData) {
   var startTime = getNYCTime(rawData[0].pickup_datetime)
     , totalPaths = rawData.length, drawn = 0;
 
-  time = moment(startDate).zone('-05:00');
+  time = moment(startTime).zone('-05:00');
   clearTimeout(timer);
   updateTimer();
 
