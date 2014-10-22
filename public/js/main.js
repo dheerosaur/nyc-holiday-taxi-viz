@@ -81,7 +81,6 @@ function updateTimer () {
 }
 
 function updateCounts (props) {
-  if (_.isEmpty(counts)) return;
   var cls = 'count-' + props.terminal.replace(' ', '-');
   counts[cls]++;
   $('.' + cls).text(counts[cls]);
@@ -178,6 +177,9 @@ var TQ = {
   currentStart: null
 };
 var QF = 'YYYY-MM-DD HH:mm:ss';
+var allTerminals = $('#terminals option').map(function () {
+  return this.value;
+});
 
 function fetchNextChunk () {
   clearTimeout(timer);
@@ -196,7 +198,7 @@ function fetchData (query) {
 }
 
 function createQuery () {
-  TQ.terminals = $('#terminals').val();
+  TQ.terminals = $('#terminals').val() || [];
   TQ.startDate = $('#startDate').val() + ' 00:00:00';
   TQ.endDate = $('#endDate').val() + ' 00:00:00';
   TQ.currentStart = TQ.startDate;
@@ -212,17 +214,14 @@ function runNewQuery () {
 
   // Clear counts. Hide/show stats as required
   counts = {};
-  $('.stats').hide();
+  var terminals = TQ.terminals.length ? TQ.terminals : allTerminals;
   $('.terminal-stats').empty();
-  if (TQ.terminals) {
-    _.each(TQ.terminals, function (t) {
-      var cls = 'count-' + t.replace(' ', '-');
-      $('<li>' + t + '<span class="' + cls + '">0</span></li>')
-        .appendTo('.terminal-stats');
-      counts[cls] = 0;
-    });
-    $('.stats').show();
-  }
+  _.each(terminals, function (t) {
+    var cls = 'count-' + t.replace(' ', '-');
+    $('<li>' + t + '<span class="' + cls + '">0</span></li>')
+      .appendTo('.terminal-stats');
+    counts[cls] = 0;
+  });
   
   fetchNextChunk();
   return false;  // for form.submit

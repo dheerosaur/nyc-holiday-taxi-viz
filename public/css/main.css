@@ -204,7 +204,6 @@ circle.LGA {
 .stats.box {
   top: 425px;
   left: 10px;
-  display: none;
 }
 
 .terminal-stats li {
