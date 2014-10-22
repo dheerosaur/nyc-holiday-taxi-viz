@@ -266,6 +266,16 @@ function initEvents () {
   });
 
   showTimeFactor();
+
+  // Show countries/airlines when user hovers on terminal
+  $('.airports .multiselect-container li>a').hover(function () {
+    var termClass = $('input', this).val().replace(' ', '-');
+    $('.airlines > div').hide();
+    $('.airlines > div.t-' + termClass).show();
+    $('.airlines').show();
+  }, function () {
+    $('.airlines').hide();
+  });
 }
 
 $(function () {

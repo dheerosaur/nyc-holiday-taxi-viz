@@ -215,3 +215,9 @@ circle.LGA {
   display: block;
   float: right;
 }
+
+.airlines.box {
+  top: 180px;;
+  left: 320px;
+  display: none;
+}
