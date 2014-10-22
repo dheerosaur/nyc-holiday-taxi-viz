@@ -31,9 +31,9 @@
     </div>
   </div>
 
-  <div class="filters box">
+  <form id="form" method="GET" class="filters box">
     <div class="airports">
-      <h4 class="box-heading">Airport</h4>
+      <h4 class="box-heading">Terminals</h4>
       <select id="terminals" multiple="multiple">
         <optgroup label="JFK">
           <option value="JFK T1">JFK T1</option>
@@ -58,13 +58,13 @@
 
     <h4 class="box-heading">Date range</h4>
     <div class="input-daterange input-group">
-      <input type="text" class="form-control" name="startDate" value="2013-12-21" />
+      <input type="text" class="form-control" id="startDate" value="2013-12-21" />
         <span class="input-group-addon">..</span>
-      <input type="text" class="form-control" name="endDate" value="2013-12-24" />
+      <input type="text" class="form-control" id="endDate" value="2013-12-24" />
     </div>
 
     <br><button type="button" class="btn btn-default submit">Submit</button>
-  </div>
+  </form>
 
   <div class="stats box">
     <h4 class="box-heading">Trips per terminal</h4>

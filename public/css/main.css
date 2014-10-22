@@ -8,6 +8,10 @@ body {
   position: relative;
 }
 
+.leaflet-container {
+  background-color: #02171c;
+}
+
 .form-control,
 .btn-default {
   color: #eee;

@@ -45,9 +45,6 @@ function initSVG() {
   d3path = d3.geo.path().projection(transform);
 }
 
-initMap();
-initSVG();
-
 function getLineFeature (trip, index) {
   var coordinates = L.PolylineUtil.decode(trip.direction);
   return {
@@ -90,36 +87,9 @@ function updateCounts (props) {
   $('.' + cls).text(counts[cls]);
 }
 
-function pathTransition (d, i) {
-  var path = this
-    , airport = d.properties.terminal.split(' ')[0];
-  var marker = g.append('circle').attr({r: 3, 'class': airport});
-
-  d3.select(path)
-    .style('opacity', .8)
-    .transition()
-    .duration(function (d) {
-      var duration = d.properties.duration;
-      return duration * 1000 / ( 60 * timeFactor);
-    })
-    .each('end', function (d) {
-      d3.select(this).remove();
-      updateCounts(d.properties);
-    })
-    .attrTween('stroke-dasharray', function () {
-      var l = path.getTotalLength()
-        , i = d3.interpolateString('0,' + l, l + ',' + l);
-      return function (t) {
-        var p = path.getPointAtLength(t * l);
-        marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-        return i(t);
-      };
-    });
-}
-
 function animatePaths (rawData) {
-  g.selectAll('path').remove();
-  if (rawData.length === 0) return;
+  var resultCount = rawData.length , drawn = 0;
+  if (resultCount === 0) return;
 
   var startTime = getNYCTime(rawData[0].pickup_datetime)
     , totalPaths = rawData.length, drawn = 0;
@@ -153,6 +123,35 @@ function animatePaths (rawData) {
     }, after);
   });
 
+  function pathTransition (d, i) {
+    var path = this
+      , airport = d.properties.terminal.split(' ')[0];
+    var marker = g.append('circle').attr({r: 3, 'class': airport});
+
+    d3.select(path)
+      .style('opacity', .8)
+      .transition()
+      .duration(function (d) {
+        var duration = d.properties.duration;
+        return duration * 1000 / ( 60 * timeFactor);
+      })
+      .each('end', function (d) {
+        d3.select(this).remove();
+        updateCounts(d.properties);
+        drawn = drawn + 1;
+        if (drawn == resultCount) fetchNextChunk();
+      })
+      .attrTween('stroke-dasharray', function () {
+        var l = path.getTotalLength()
+          , i = d3.interpolateString('0,' + l, l + ',' + l);
+        return function (t) {
+          var p = path.getPointAtLength(t * l);
+          marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
+          return i(t);
+        };
+      });
+  }
+
   map.on('viewreset', reset);
   reset();
 
@@ -170,16 +169,49 @@ function animatePaths (rawData) {
   }
 }
 
-function updateQuery (query) {
-  if (_.isUndefined(query)) query = {};
-  var url = '/trip?' + $.param(query);
-  queryTime = new Date();
+// Trips Query
+var TQ = {
+  terminals: [],
+  startDate: null,
+  endDate: null,
+  currentStart: null
+};
+var QF = 'YYYY-MM-DD HH:mm:ss';
 
+function fetchNextChunk () {
+  var current = moment(TQ.currentStart)
+    , start = current.add(24, 'hours').format(QF)
+    , end = current.add(24, 'hours').format(QF)
+  TQ.currentStart = start;
+  fetchData({startDate: start, endDate: end});
+}
+
+function fetchData (query) {
+  var url = '/trip?' + $.param(query);
+  d3.json(url, animatePaths);
+}
+
+function createQuery () {
+  TQ.terminals = $('#terminals').val();
+  TQ.startDate = $('#startDate').val() + ' 00:00:00';
+  TQ.endDate = $('#endDate').val() + ' 00:00:00';
+  TQ.currentStart = TQ.startDate;
+}
+
+function runNewQuery () {
+  createQuery();
+
+  // Clear all existing paths, circles, timeouts
+  queryTime = new Date();
+  g.selectAll('path').transition(0);
+  g.selectAll('circle').remove();
+
+  // Clear counts. Hide/show stats as required
   counts = {};
   $('.stats').hide();
   $('.terminal-stats').empty();
-  if (query.terminals) {
-    _.each(query.terminals, function (t) {
+  if (TQ.terminals) {
+    _.each(TQ.terminals, function (t) {
       var cls = 'count-' + t.replace(' ', '-');
       $('<li>' + t + '<span class="' + cls + '">0</span></li>')
         .appendTo('.terminal-stats');
@@ -188,26 +220,11 @@ function updateQuery (query) {
     $('.stats').show();
   }
   
-  g.selectAll('path').transition(0);
-  g.selectAll('circle').remove();
-
-  d3.json(url, animatePaths);
+  fetchNextChunk();
+  return false;  // for form.submit
 }
 
-var startDate = '2013-12-22 00:00:00'
-  , endDate = '2013-12-23 00:00:00';
-
-setTimeout(function () {
-  updateQuery({
-    startDate: startDate,
-    endDate: endDate
-  });
-}, 500);
-
-$(function () {
-
-  $('.timeFactor').html(timeFactor);
-
+function initEvents () {
   $('#terminals').multiselect();
 
   $('.input-daterange').datepicker({
@@ -216,25 +233,31 @@ $(function () {
     endDate: '2013-12-30'
   });
 
+  $('#form').submit(runNewQuery);
+
+  // Time factor related
+  function showTimeFactor () {
+    $('.timeFactor').html(timeFactor);
+  }
+
   $('.slower').click(function () {
     if (timeFactor > 1) timeFactor -= 1;
-    $('.timeFactor').html(timeFactor);
+    showTimeFactor();
   });
 
   $('.faster').click(function () {
     timeFactor += 1;
-    $('.timeFactor').html(timeFactor);
+    showTimeFactor();
   });
 
-  $('.filters .submit').click(function () {
-    var terminals = $('#terminals').val();
-    if (terminals) {
-      updateQuery({
-        terminals: terminals,
-        startDate: startDate,
-        endDate: endDate
-      });
-    }
-  });
+  showTimeFactor();
+}
+
+$(function () {
+
+  initMap();
+  initSVG();
+  initEvents();
+  setTimeout(runNewQuery, 500);
 
 });
