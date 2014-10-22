@@ -183,13 +183,14 @@ function fetchNextChunk () {
   clearTimeout(timer);
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
-    , start = current.add(24, 'hours').format(QF)
+    , start = current.format(QF)
     , end = current.add(24, 'hours').format(QF);
-  TQ.currentStart = start;
+  TQ.currentStart = end;
   fetchData({startDate: start, endDate: end});
 }
 
 function fetchData (query) {
+  query.terminals = TQ.terminals;
   var url = '/trip?' + $.param(query);
   d3.json(url, animatePaths);
 }
