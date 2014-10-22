@@ -137,6 +137,9 @@ function animatePaths (rawData) {
       })
       .each('end', function (d) {
         d3.select(this).remove();
+        marker.attr('done', 'yes').datum(function (d) {
+          return coordToLatLon([d.x, d.y]);
+        });
         updateCounts(d.properties);
         drawn = drawn + 1;
         if (drawn == resultCount) fetchNextChunk();
@@ -147,12 +150,14 @@ function animatePaths (rawData) {
         return function (t) {
           var p = path.getPointAtLength(t * l);
           marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
+          marker.datum(p);
           return i(t);
         };
       });
   }
 
-  map.on('viewreset', reset);
+  map.off('viewreset');
+  map.on('viewreset', onViewReset);
   reset();
 
   function reset () {
@@ -166,6 +171,13 @@ function animatePaths (rawData) {
       .style("top", topLeft[1] - 50 + "px");
     g.attr("transform", "translate(" + (-topLeft[0]+50) + "," + (-topLeft[1]+50)+ ")");
     feature.attr("d", d3path);
+  }
+
+  function onViewReset () {
+    reset();  // Shift cirlces to correct latLng as well
+    g.selectAll('circle[done]').attr('transform', function (d) {
+      return translatePoint([d.lng, d.lat]);
+    });
   }
 }
 
