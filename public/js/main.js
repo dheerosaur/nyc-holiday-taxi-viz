@@ -244,8 +244,8 @@ function initEvents () {
 
   $('.input-daterange').datepicker({
     format: 'yyyy-mm-dd',
-    startDate: '2013-12-20',
-    endDate: '2013-12-30'
+    startDate: '2013-11-16',
+    endDate: '2013-12-31'
   });
 
   $('#form').submit(runNewQuery);
