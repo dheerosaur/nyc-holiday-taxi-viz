@@ -89,6 +89,7 @@ function updateCounts (props) {
 
 function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
+  g.selectAll('path').remove();
   if (resultCount === 0) return;
 
   var startTime = getNYCTime(rawData[0].pickup_datetime)
@@ -179,9 +180,11 @@ var TQ = {
 var QF = 'YYYY-MM-DD HH:mm:ss';
 
 function fetchNextChunk () {
+  clearTimeout(timer);
+  if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.add(24, 'hours').format(QF)
-    , end = current.add(24, 'hours').format(QF)
+    , end = current.add(24, 'hours').format(QF);
   TQ.currentStart = start;
   fetchData({startDate: start, endDate: end});
 }
