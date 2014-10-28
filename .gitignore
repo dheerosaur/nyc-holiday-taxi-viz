@@ -1,4 +1,3 @@
-csvs
-data.csv
+*.csv
 /node_modules
 /db
