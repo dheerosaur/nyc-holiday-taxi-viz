@@ -41,7 +41,7 @@ app.listen(port);
 console.log('Listening on port ' + port);
 
 var columns = [
-    'direction', 'terminal', 'pickupTime', 'duration'
+    'pickupTime', 'duration', 'terminal', 'direction'
   ]
   , trip = sql.define({name: 'trips', columns: columns})
 
@@ -56,7 +56,7 @@ function buildQuery(params) {
   if (params.endDate) {
     query.where(trip.pickupTime.lte(params.endDate));
   }
-  query = query.order(trip.pickup_datetime);
+  query = query.order(trip.pickupTime);
   return query.toQuery();
 }
 
@@ -69,7 +69,7 @@ function createGeojson(rawData, callback) {
       type: 'Feature',
       properties: {
         key: index,
-        passenger: row.passenger_count
+        duration: row.duration
       },
       geometry: {
         type: 'LineString',
