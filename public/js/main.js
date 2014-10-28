@@ -52,9 +52,7 @@ function getLineFeature (trip, index) {
     properties: {
       key: index,
       terminal: trip.terminal,
-      passengers: trip.passenger_count,
       pickupTime: trip.pickup_datetime,
-      dropoffTime: trip.dropoff_datetime,
       duration: trip.trip_time_in_secs
     },
     geometry: {

@@ -41,8 +41,7 @@ app.listen(port);
 console.log('Listening on port ' + port);
 
 var columns = [
-    'vendor_id', 'passenger_count', 'direction', 'terminal',
-    'pickup_datetime', 'dropoff_datetime', 'trip_time_in_secs'
+    'direction', 'terminal', 'pickup_datetime', 'trip_time_in_secs'
   ]
   , trip = sql.define({name: 'trips', columns: columns})
 
