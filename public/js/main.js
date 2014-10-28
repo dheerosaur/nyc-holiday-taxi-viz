@@ -89,7 +89,7 @@ function animatePaths (rawData) {
   g.selectAll('path').remove();
   if (resultCount === 0) return;
 
-  var startTime = getNYCTime(rawData[0].pickup_datetime)
+  var startTime = getNYCTime(rawData[0].pickupTime)
     , totalPaths = rawData.length, drawn = 0;
 
   time = moment(startTime).zone('-05:00');
@@ -124,7 +124,7 @@ function animatePaths (rawData) {
   function pathTransition (d, i) {
     var path = this
       , airport = d.properties.terminal.split(' ')[0];
-    var marker = g.append('circle').attr({r: 3, 'class': airport});
+    var marker = g.append('circle').attr({r: 2, 'class': airport});
 
     d3.select(path)
       .style('opacity', .8)
