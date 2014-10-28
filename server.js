@@ -41,7 +41,7 @@ app.listen(port);
 console.log('Listening on port ' + port);
 
 var columns = [
-    'direction', 'terminal', 'pickup_datetime', 'trip_time_in_secs'
+    'direction', 'terminal', 'pickupTime', 'duration'
   ]
   , trip = sql.define({name: 'trips', columns: columns})
 
@@ -51,12 +51,12 @@ function buildQuery(params) {
     query.where(trip.terminal.in(params.terminals));
   }
   if (params.startDate) {
-    query.where(trip.pickup_datetime.gte(params.startDate));
+    query.where(trip.pickupTime.gte(params.startDate));
   } 
   if (params.endDate) {
-    query.where(trip.pickup_datetime.lte(params.endDate));
+    query.where(trip.pickupTime.lte(params.endDate));
   }
-  // query = query.order(trip.pickup_datetime);
+  query = query.order(trip.pickup_datetime);
   return query.toQuery();
 }
 

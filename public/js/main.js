@@ -52,8 +52,8 @@ function getLineFeature (trip, index) {
     properties: {
       key: index,
       terminal: trip.terminal,
-      pickupTime: trip.pickup_datetime,
-      duration: trip.trip_time_in_secs
+      pickupTime: trip.pickupTime,
+      duration: trip.duration
     },
     geometry: {
       type: 'LineString',
