@@ -2,23 +2,20 @@
 import glob
 import csv
 from math import radians, cos, sin, asin, sqrt
+from datetime import datetime
 
 READ_KEYS = (
-    'vendor_id', 'rate_code',
-    'pickup_datetime', 'dropoff_datetime',
+    'vendor_id', 'rate_code', 'pickup_datetime',
     'trip_time_in_secs', 'passenger_count',
     'pickup_longitude', 'pickup_latitude',
     'dropoff_longitude', 'dropoff_latitude',
 )
 
 WRITE_KEYS = READ_KEYS + (
-    'terminal', 'terminal_distance'
+    'terminal',
 )
 
 TERMINALS = (
-    ('EWR A', 100, 40.687819, -74.182653),
-    ('EWR B', 100, 40.690580, -74.177597),
-    ('EWR C', 100, 40.695255, -74.177720),
     ('JFK T1', 100, 40.643190, -73.789867),
     ('JFK T23', 100, 40.641530, -73.787875),
     ('JFK T4', 100, 40.644429, -73.782924),
@@ -29,6 +26,9 @@ TERMINALS = (
     ('LGA B', 50, 40.774210, -73.872263),
     ('LGA C', 40, 40.771111, -73.865579),
     ('LGA D', 30, 40.768477, -73.862196),
+    # ('EWR A', 100, 40.687819, -74.182653),
+    # ('EWR B', 100, 40.690580, -74.177597),
+    # ('EWR C', 100, 40.695255, -74.177720),
 )
 
 
@@ -58,10 +58,12 @@ def get_nearest(cab_data):
     pickup_lng = float(cab_data['pickup_longitude'])
     nearest = min((haversine(pickup_lng, pickup_lat, lng, lat), terminal)
                   for terminal, rng, lat, lng in TERMINALS)
-    return {
-        'terminal_distance': int(nearest[0]),
-        'terminal': nearest[1],
-    }
+    return {'terminal': nearest[1]}
+
+
+def format_date(dt):
+    date = datetime.strptime(dt, '%m/%d/%y %H:%M')
+    return date.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def extract_data(path):
@@ -69,6 +71,7 @@ def extract_data(path):
         reader = csv.DictReader(f)
         for row in reader:
             data = {k: row[k] for k in READ_KEYS}
+            data['pickup_datetime'] = format_date(data['pickup_datetime'])
             data.update(get_nearest(data))
             yield data
 
