@@ -242,7 +242,7 @@ function initEvents () {
 
   $('.input-daterange').datepicker({
     format: 'yyyy-mm-dd',
-    startDate: '2013-11-16',
+    startDate: '2013-11-15',
     endDate: '2013-12-31'
   });
 
