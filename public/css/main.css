@@ -37,7 +37,7 @@ body {
 
 .box {
   position: absolute;
-  width: 300px;
+  width: 280px;
   padding: 20px;
   background: rgba(0,0,0,.5);
   border-radius: 5px;
@@ -157,7 +157,7 @@ circle.LGA {
 }
 
 .date-left {
-  padding: 5px;
+  padding: 3px;
   text-align: center;
   border: 1px solid #ccc;
 }
@@ -167,26 +167,27 @@ circle.LGA {
 }
 
 .date {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-  line-height: 24px;
+  line-height: 22px;
 }
 
 .month {
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 14px;
   margin-top: 5px;
 }
 
 .readableTime {
   position: relative;
-  top: -3px;
-  font-size: 46px;
-  line-height: 46px;
+  top: -5px;
+  font-size: 42px;
+  line-height: 42px;
 }
 
 .date-speed {
   text-align: center;
+  font-size: 13px;
   color: #ccc;
 }
 

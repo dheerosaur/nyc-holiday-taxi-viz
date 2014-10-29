@@ -19,41 +19,51 @@
     </div>
     <div class="date-right">
       <span class="readableTime">00:00 am</span>
-      <div class="date-speed">Speed: <span class = "timeFactor"></span> mins per second</div>
+      <div class="date-speed">Speed: <span class="timeFactor"></span> mins per second</div>
     </div>
     <div class= "controls">
       <button type="button" class="btn btn-default slower">
-        <span class="glyphicon glyphicon-backward"></span> Slower
+        <i class="glyphicon glyphicon-backward"></i> Slower
       </button>
       <button type="button" class="btn btn-default faster">
-        Faster <span class="glyphicon glyphicon-forward"></span>
+        Faster <i class="glyphicon glyphicon-forward"></i>
       </button>
     </div>
   </div>
 
-  <form id="form" method="GET" class="filters box">
+  <form id="form" method="GET" action="" class="filters box">
     <div class="airports">
       <h4 class="box-heading">Terminals</h4>
-      <select id="terminals" multiple="multiple">
-        <optgroup label="JFK">
-          <option value="JFK T1">JFK T1</option>
-          <option value="JFK T23">JFK T23</option>
-          <option value="JFK T4">JFK T4</option>
-          <option value="JFK T5">JFK T5</option>
-          <option value="JFK T7">JFK T7</option>
-          <option value="JFK T8">JFK T8</option>
-        </optgroup>
-        <optgroup label="LGA">
-          <option value="LGA A">LGA A</option>
-          <option value="LGA B">LGA B</option>
-          <option value="LGA C">LGA C</option>
-        </optgroup>
-        <optgroup label="EWR">
-          <option value="EWR A">EWR A</option>
-          <option value="EWR B">EWR B</option>
-          <option value="EWR C">EWR C</option>
-        </optgroup>
-      </select>
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T1">JFK T1</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T23">JFK T23</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T4">JFK T4</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T5">JFK T5</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T7">JFK T7</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="JFK T8">JFK T8</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="LGA A">LGA A</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="LGA B">LGA B</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="LGA C">LGA C</label>
+      </div>  
+      <div class="checkbox">
+        <label><input type="checkbox" value="LGA D">LGA D</label>
+      </div>  
     </div>
 
     <h4 class="box-heading">Date range</h4>
@@ -65,12 +75,6 @@
 
     <br><input type="submit" class="btn btn-default submit" value="Update">
   </form>
-
-  <div class="stats box">
-    <h4 class="box-heading">Trips per terminal</h4>
-    <ul class="list-unstyled terminal-stats">
-    </ul>
-  </div>
 
   <div class="airlines box">
     <h4 class="box-heading">Airlines</h4>
