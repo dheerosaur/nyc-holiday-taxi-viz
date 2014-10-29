@@ -65,7 +65,7 @@ function getLineFeature (trip, index) {
 }
 
 var time = moment()
-  , timeFactor = 10
+  , timeFactor = 5
   , timer = setTimeout(function () {}, 1)
   , queryTime
   , counts = {};
@@ -138,7 +138,7 @@ function animatePaths (rawData) {
         marker.attr('done', 'yes').datum(function (d) {
           return coordToLatLon([d.x, d.y]);
         });
-        updateCounts(d.properties);
+        // updateCounts(d.properties);
         drawn = drawn + 1;
         if (drawn == resultCount) fetchNextChunk();
       })
@@ -200,7 +200,7 @@ function fetchNextChunk () {
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(4, 'hours').format(QF);
+    , end = current.add(1, 'hours').format(QF);
   TQ.currentStart = end;
   fetchData({startDate: start, endDate: end});
 }
