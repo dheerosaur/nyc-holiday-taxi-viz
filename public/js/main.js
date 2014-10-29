@@ -65,7 +65,7 @@ function getLineFeature (trip, index) {
 }
 
 var time = moment()
-  , timeFactor = 5
+  , timeFactor = 10
   , timer = setTimeout(function () {}, 1)
   , queryTime
   , counts = {};
@@ -79,9 +79,10 @@ function updateTimer () {
 }
 
 function updateCounts (props) {
-  var cls = 'count-' + props.terminal.replace(' ', '-');
-  counts[cls]++;
-  $('.' + cls).text(counts[cls]);
+  var t = props.terminal
+    , countId = '#count-' + t.replace(' ', '-');
+  counts[t]++;
+  $(countId).text(counts[t]);
 }
 
 function animatePaths (rawData) {
@@ -140,7 +141,7 @@ function animatePaths (rawData) {
         marker.attr('done', 'yes').datum(function (d) {
           return coordToLatLon([d.x, d.y]);
         });
-        // updateCounts(d.properties);
+        updateCounts(d.properties);
         drawn = drawn + 1;
         if (drawn == resultCount) fetchNextChunk();
       })
@@ -195,7 +196,7 @@ var TQ = {
   currentStart: null
 };
 var QF = 'YYYY-MM-DD HH:mm:ss';
-var allTerminals = getTerminals('.airports input');
+var allTerminals = getTerminals('.terminals input');
 
 function fetchNextChunk () {
   clearTimeout(timer);
@@ -214,7 +215,7 @@ function fetchData (query) {
 }
 
 function createQuery () {
-  TQ.terminals = getTerminals('.airports input:checked');
+  TQ.terminals = getTerminals('.terminals input:checked');
   TQ.startDate = $('#startDate').val() + ' 00:00:00';
   TQ.endDate = $('#endDate').val() + ' 00:00:00';
   TQ.currentStart = TQ.startDate;
@@ -229,14 +230,13 @@ function runNewQuery () {
   g.selectAll('circle').remove();
 
   // Clear counts. Hide/show stats as required
-  counts = {};
   var terminals = TQ.terminals.length ? TQ.terminals : allTerminals;
-  $('.terminal-stats').empty();
-  _.each(terminals, function (t) {
-    var cls = 'count-' + t.replace(' ', '-');
-    $('<li>' + t + '<span class="' + cls + '">0</span></li>')
-      .appendTo('.terminal-stats');
-    counts[cls] = 0;
+  _.each(terminals, function (t) { counts[t] = 0; });
+  $('.tcount').text('0');
+
+  $('.terminals .checkbox').each(function () {
+    var checked = $('input', this).is(':checked');
+    $(this).toggleClass('striked', checked);
   });
   
   fetchNextChunk();
@@ -271,7 +271,7 @@ function initEvents () {
   showTimeFactor();
 
   // Show countries/airlines when user hovers on terminal
-  $('.airports .checkbox').hover(function () {
+  $('.terminals .checkbox').hover(function () {
     var termClass = $('input', this).val().replace(' ', '-');
     $('.airlines > div').hide();
     $('.airlines > div.t-' + termClass).show();

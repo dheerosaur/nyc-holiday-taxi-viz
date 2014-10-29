@@ -66,11 +66,17 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   left: 10px;
 }
 
-.airports {
+.terminals {
   margin-bottom: 10px;
 }
-  .airports .checkbox label {
+  .terminals .checkbox label {
     font-weight: 300;
+  }
+  .terminals .checkbox {
+    opacity: .5;
+  }
+  .terminals .checkbox.striked {
+    opacity: 1;
   }
 
 svg {
@@ -198,28 +204,14 @@ circle.LGA {
   float: right;
 }
 
-.multiselect-item label {
-  color: #444;
-}
-
-.stats.box {
-  top: 425px;
-  left: 10px;
-}
-
-.terminal-stats li {
-  clear: both;
-  font-size: 16px;
-  margin-bottom: 6px;
-}
-.terminal-stats li span {
-  display: block;
-  float: right;
-}
-
 .airlines.box {
   top: 180px;
   left: 300px;
   display: none;
   font-size: 12px;
 }
+
+.tcount {
+  float: right;
+}
+
