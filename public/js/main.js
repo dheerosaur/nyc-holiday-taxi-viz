@@ -179,6 +179,12 @@ function animatePaths (rawData) {
   }
 }
 
+function getTerminals (selector) {
+  return $(selector).map(function () {
+    return this.value;
+  }).get();
+}
+
 // Trips Query
 var TQ = {
   terminals: [],
@@ -187,9 +193,7 @@ var TQ = {
   currentStart: null
 };
 var QF = 'YYYY-MM-DD HH:mm:ss';
-var allTerminals = $('#terminals option').map(function () {
-  return this.value;
-});
+var allTerminals = getTerminals('.airports input');
 
 function fetchNextChunk () {
   clearTimeout(timer);
@@ -208,7 +212,7 @@ function fetchData (query) {
 }
 
 function createQuery () {
-  TQ.terminals = $('#terminals').val() || [];
+  TQ.terminals = getTerminals('.airports input:checked');
   TQ.startDate = $('#startDate').val() + ' 00:00:00';
   TQ.endDate = $('#endDate').val() + ' 00:00:00';
   TQ.currentStart = TQ.startDate;
