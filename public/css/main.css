@@ -6,6 +6,8 @@ html, body, #map {
 
 body {
   position: relative;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
 }
 
 .leaflet-container {
@@ -47,7 +49,7 @@ body {
 .box-heading {
   margin: 0 0 10px 0;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .datetime-box.box {
@@ -168,7 +170,7 @@ circle.LGA {
 
 .date {
   font-size: 22px;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 22px;
 }
 
@@ -218,7 +220,8 @@ circle.LGA {
 }
 
 .airlines.box {
-  top: 180px;;
-  left: 320px;
+  top: 180px;
+  left: 300px;
   display: none;
+  font-size: 12px;
 }

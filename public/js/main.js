@@ -238,7 +238,6 @@ function runNewQuery () {
 }
 
 function initEvents () {
-  $('#terminals').multiselect();
 
   $('.input-daterange').datepicker({
     format: 'yyyy-mm-dd',
@@ -266,7 +265,7 @@ function initEvents () {
   showTimeFactor();
 
   // Show countries/airlines when user hovers on terminal
-  $('.airports .multiselect-container li>a').hover(function () {
+  $('.airports .checkbox').hover(function () {
     var termClass = $('input', this).val().replace(' ', '-');
     $('.airlines > div').hide();
     $('.airlines > div.t-' + termClass).show();
