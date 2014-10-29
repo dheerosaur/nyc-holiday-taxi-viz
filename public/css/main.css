@@ -7,7 +7,11 @@ html, body, #map {
 body {
   position: relative;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-weight: 300;
+}
+
+b, strong, h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
 }
 
 .leaflet-container {
@@ -65,14 +69,8 @@ body {
 .airports {
   margin-bottom: 10px;
 }
-  .airports .btn-group,
-  .airports .multiselect {
-    width: 100%;
-    text-align: left;
-  }
-
-  .airports .multiselect .caret {
-    display: none;
+  .airports .checkbox label {
+    font-weight: 300;
   }
 
 svg {
