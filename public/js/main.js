@@ -200,7 +200,7 @@ function fetchNextChunk () {
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(24, 'hours').format(QF);
+    , end = current.add(4, 'hours').format(QF);
   TQ.currentStart = end;
   fetchData({startDate: start, endDate: end});
 }
