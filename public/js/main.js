@@ -87,7 +87,7 @@ function updateCounts (props) {
 function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
   g.selectAll('path').remove();
-  if (resultCount === 0) return;
+  if (resultCount === 0) { fetchNextChunk(); return; }
 
   var startTime = getNYCTime(rawData[0].pickupTime)
     , totalPaths = rawData.length, drawn = 0;
