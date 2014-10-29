@@ -209,6 +209,10 @@ function fetchNextChunk () {
 }
 
 function fetchData (query) {
+  if (TQ.terminals.length === 0) {
+    alert("Please select at least one terminal");
+    return;
+  }
   query.terminals = TQ.terminals;
   var url = '/trip?' + $.param(query);
   d3.json(url, animatePaths);
@@ -230,9 +234,8 @@ function runNewQuery () {
   g.selectAll('circle').remove();
 
   // Clear counts. Hide/show stats as required
-  var terminals = TQ.terminals.length ? TQ.terminals : allTerminals;
-  _.each(terminals, function (t) { counts[t] = 0; });
-  $('.tcount').text('0');
+  _.each(allTerminals, function (t) { counts[t] = 0; });
+  $('.tcount').html('0');
 
   $('.terminals .checkbox').each(function () {
     var checked = $('input', this).is(':checked');
