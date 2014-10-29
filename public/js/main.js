@@ -127,11 +127,13 @@ function animatePaths (rawData) {
     var marker = g.append('circle').attr({r: 2, 'class': airport});
 
     d3.select(path)
-      .style('opacity', .8)
       .transition()
       .duration(function (d) {
         var duration = d.properties.duration;
         return duration * 1000 / ( 60 * timeFactor);
+      })
+      .each('start', function (d) {
+        d3.select(this).style('opacity', .8);
       })
       .each('end', function (d) {
         d3.select(this).remove();
