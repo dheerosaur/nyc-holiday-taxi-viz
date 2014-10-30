@@ -47,7 +47,6 @@ function initSVG() {
 }
 
 function getLineFeature (trip, index) {
-  var coordinates = L.PolylineUtil.decode(trip.direction);
   return {
     type: 'Feature',
     properties: {
@@ -58,9 +57,7 @@ function getLineFeature (trip, index) {
     },
     geometry: {
       type: 'LineString',
-      coordinates: _.map(coordinates, function (c) {
-        return [c[1], c[0]];
-      })
+      coordinates: polylineDecode(trip.direction)
     }
   }
 }
@@ -208,7 +205,7 @@ function fetchNextChunk () {
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(1, 'hours').format(QF);
+    , end = current.add(24, 'hours').format(QF);
   TQ.currentStart = end;
   fetchData({startDate: start, endDate: end});
 }
@@ -291,6 +288,6 @@ $(function () {
   $('#begin').click(function () {
     $('.overlay').hide();
     runNewQuery();
-  });
+  }).click();
 });
 // End document ready }}}
