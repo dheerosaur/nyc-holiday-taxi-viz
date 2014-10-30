@@ -106,7 +106,6 @@ function animatePaths (rawData) {
   var feature = g.selectAll('path')
     .data(data.features)
     .enter().append('path')
-    .style('opacity', 0)
     .attr('class', function (d) {
       return ('trip-' + d.properties.key) + ' ' +
              ('from-' + d.properties.terminal.slice(0, 3));
@@ -124,7 +123,7 @@ function animatePaths (rawData) {
   });
 
   function pathTransition (d, i) {
-    var path = this
+    var path = this, l = path.getTotalLength()
       , airport = d.properties.terminal.split(' ')[0];
     var marker = g.append('circle').attr({r: 2, 'class': airport});
 
@@ -135,26 +134,20 @@ function animatePaths (rawData) {
         return duration * 1000 / ( 60 * timeFactor);
       })
       .each('start', function (d) {
-        d3.select(this).style('opacity', .8);
+        this.style.opacity = 0.8;
       })
       .each('end', function (d) {
+        var p = path.getPointAtLength(l);
+        marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')').datum(p);
+
         d3.select(this).remove();
-        marker.attr('done', 'yes').datum(function (d) {
-          return coordToLatLon([d.x, d.y]);
-        });
         updateCounts(d.properties);
         drawn = drawn + 1;
         if (drawn == resultCount) fetchNextChunk();
       })
       .attrTween('stroke-dasharray', function () {
-        var l = path.getTotalLength()
-          , i = d3.interpolateString('0,' + l, l + ',' + l);
-        return function (t) {
-          var p = path.getPointAtLength(t * l);
-          marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')')
-          marker.datum(p);
-          return i(t);
-        };
+        var i = d3.interpolateString('0,' + l, l + ',' + l);
+        return function (t) { return i(t); };
       });
   }
 
@@ -205,7 +198,7 @@ function fetchNextChunk () {
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(24, 'hours').format(QF);
+    , end = current.add(4, 'hours').format(QF);
   TQ.currentStart = end;
   fetchData({startDate: start, endDate: end});
 }
@@ -284,6 +277,8 @@ $(function () {
   initMap();
   initSVG();
   initEvents();
+
+  $('.checkbox input').attr('checked', 'checked');
 
   $('#begin').click(function () {
     $('.overlay').hide();

@@ -93,11 +93,12 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 svg {
     position: relative;
 }
-path {
-    fill: none;
-    stroke-width: 2px;
-}
 
+path {
+  opacity: 0;
+  fill: none;
+  stroke-width: 2px;
+}
   path.from-JFK {
     stroke: #3f9;
   }
