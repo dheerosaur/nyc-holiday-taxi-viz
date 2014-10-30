@@ -1,17 +1,24 @@
-html, body, #map {
+html, body {
   height: 100%;
   margin: 0px;
   padding: 0px
 }
 
 body {
-  position: relative;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300;
 }
 
 b, strong, h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .leaflet-container {
@@ -166,3 +173,23 @@ circle.LGA {
   margin-top: 5px;
   font-weight: 300;
 }
+.overlay {
+  position: relative;
+  top: 50%;
+  bottom: 0;
+  height: auto;
+  color:#333333;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  z-index: 500;
+}
+  .container.overlay {
+    max-width: 800px;
+  }
+  .overlay .jumbotron {
+    background: rgba(220,220,220,.95);
+  }
+  .overlay p {
+    font-weight: 400;
+  }

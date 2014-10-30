@@ -247,7 +247,7 @@ function runNewQuery () {
     $(this).toggleClass('striked', !checked);
   });
   
-  // fetchNextChunk();
+  fetchNextChunk();
 }
 // End Fetching data }}}
 
@@ -278,6 +278,7 @@ function initEvents () {
   }, function () {
     $('.airlines').hide();
   });
+
 }
 // End jQuery events }}}
 
@@ -287,6 +288,9 @@ $(function () {
   initSVG();
   initEvents();
 
-  $('#begin').click(runNewQuery);
+  $('#begin').click(function () {
+    $('.overlay').hide();
+    runNewQuery();
+  });
 });
 // End document ready }}}
