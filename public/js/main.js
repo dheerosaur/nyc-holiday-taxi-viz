@@ -75,9 +75,8 @@ var time = moment()
 
 function updateTimer () {
   time.add(1, 'minutes');
-  $('.readableTime').text(time.format('hh:mm a'));
-  $('.date').text(time.format('DD'));
-  $('.month').text(time.format('MMM'));
+  $('.date').text(time.format('dddd, MMM DD'));
+  $('.time').text(time.format('hh:mm a'));
   timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
 }
 
@@ -245,17 +244,17 @@ function runNewQuery () {
 
   $('.terminals .checkbox').each(function () {
     var checked = $('input', this).is(':checked');
-    $(this).toggleClass('striked', checked);
+    $(this).toggleClass('striked', !checked);
   });
   
-  fetchNextChunk();
-  return false;  // for form.submit
+  // fetchNextChunk();
 }
 // End Fetching data }}}
 
 // jQuery events {{{
 function initEvents () {
 
+  /*
   $('.input-daterange').datepicker({
     format: 'yyyy-mm-dd',
     startDate: '2013-11-15',
@@ -263,23 +262,12 @@ function initEvents () {
   });
 
   $('#form').submit(runNewQuery);
+  */
 
-  // Time factor related
-  function showTimeFactor () {
-    $('.timeFactor').html(timeFactor);
-  }
-
-  $('.slower').click(function () {
-    if (timeFactor > 1) timeFactor -= 1;
-    showTimeFactor();
+  $('.speed').click(function () {
+    var speed = $(this).data('speed');
+    timeFactor = parseInt(speed, 10);
   });
-
-  $('.faster').click(function () {
-    timeFactor += 1;
-    showTimeFactor();
-  });
-
-  showTimeFactor();
 
   // Show countries/airlines when user hovers on terminal
   $('.terminals .checkbox').hover(function () {
@@ -293,13 +281,12 @@ function initEvents () {
 }
 // End jQuery events }}}
 
-// document ready {{{
+// Document ready {{{
 $(function () {
-
   initMap();
   initSVG();
   initEvents();
-  setTimeout(runNewQuery, 500);
 
+  $('#begin').click(runNewQuery);
 });
 // End document ready }}}

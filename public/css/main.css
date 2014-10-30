@@ -43,17 +43,11 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 
 .box {
   position: absolute;
-  width: 280px;
+  width: 250px;
   padding: 20px;
   background: rgba(0,0,0,.5);
   border-radius: 5px;
   color: #eee;
-}
-
-.box-heading {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-  font-weight: 600;
 }
 
 .datetime-box.box {
@@ -62,21 +56,31 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .filters.box {
-  top: 180px;
+  top: 160px;
   left: 10px;
+}
+
+.airlines.box {
+  top: 160px;
+  left: 270px;
+  display: none;
+  font-size: 12px;
+}
+
+.box-heading {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .terminals {
   margin-bottom: 20px;
 }
   .terminals .checkbox label {
-    font-weight: 300;
-  }
-  .terminals .checkbox {
-    opacity: .5;
+    font-weight: 400;
   }
   .terminals .checkbox.striked {
-    opacity: 1;
+    opacity: .5;
   }
 
 svg {
@@ -131,84 +135,25 @@ circle.LGA {
     fill: #000;
 }
 
+.date {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 300;
+}
+
 .time {
-  font-size: 3em;
-}
-
-
-.date {
-  font-size: 18px;
-}
-
-.legendItem svg {
-  height: 40px;
-  width: 40px;
-}
-.legendItem p {
-  display: inline-block;
   position: relative;
-  top: -14px;
-  left:10px;
-}
-.legendItem {
-  height:32px;
-}
-
-.date-left,
-.date-right {
-  display: inline-block;
-  color: #f6f6f6;
-  margin-bottom: 5px;
-  vertical-align: top;
-}
-
-.date-left {
-  padding: 3px;
-  text-align: center;
-  border: 1px solid #ccc;
-}
-
-.date-right {
-  margin-left: 10px;
-}
-
-.date {
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 22px;
-}
-
-.month {
-  text-transform: uppercase;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.readableTime {
-  position: relative;
-  top: -5px;
   font-size: 42px;
-  line-height: 42px;
+  line-height: 50px;
+  margin-bottom: 5px;
 }
 
-.date-speed {
-  text-align: center;
-  font-size: 13px;
-  color: #ccc;
-}
-
-.datetime-box .controls {
-  margin-top: 10px;
-}
-.faster {
-  float: right;
-}
-
-.airlines.box {
-  top: 180px;
-  left: 300px;
-  display: none;
+.datetime-box .controls .btn {
+  display: inline-block;
   font-size: 12px;
+  border-width: 2px;
+  padding: 3px 6px;
+  margin-right: 3px;
 }
 
 .tcount {
