@@ -1,4 +1,4 @@
-/* Utility functions */
+// Utility functions {{{
 
   function translatePoint(d) {
     var point = map.latLngToLayerPoint(new L.LatLng(d[1],d[0]));
@@ -20,8 +20,9 @@
     return new Date(formatted);
   }
 
-/* End utility functions */
+// End utility functions }}}
 
+// Map and SVG {{{
 var map, svg, g, transform, d3path;
 
 function initMap () {
@@ -63,7 +64,9 @@ function getLineFeature (trip, index) {
     }
   }
 }
+// End Map and SVG }}}
 
+// Time and Counts {{{
 var time = moment()
   , timeFactor = 10
   , timer = setTimeout(function () {}, 1)
@@ -84,7 +87,9 @@ function updateCounts (props) {
   counts[t]++;
   $(countId).text(counts[t]);
 }
+// End time and counts }}}
 
+// Animation and markers {{{
 function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
   g.selectAll('path').remove();
@@ -181,14 +186,9 @@ function animatePaths (rawData) {
     });
   }
 }
+// End Animation and Markers }}}
 
-function getTerminals (selector) {
-  return $(selector).map(function () {
-    return this.value;
-  }).get();
-}
-
-// Trips Query
+// Fetching data {{{
 var TQ = {
   terminals: [],
   startDate: null,
@@ -197,6 +197,12 @@ var TQ = {
 };
 var QF = 'YYYY-MM-DD HH:mm:ss';
 var allTerminals = getTerminals('.terminals input');
+
+function getTerminals (selector) {
+  return $(selector).map(function () {
+    return this.value;
+  }).get();
+}
 
 function fetchNextChunk () {
   clearTimeout(timer);
@@ -245,7 +251,9 @@ function runNewQuery () {
   fetchNextChunk();
   return false;  // for form.submit
 }
+// End Fetching data }}}
 
+// jQuery events {{{
 function initEvents () {
 
   $('.input-daterange').datepicker({
@@ -283,7 +291,9 @@ function initEvents () {
     $('.airlines').hide();
   });
 }
+// End jQuery events }}}
 
+// document ready {{{
 $(function () {
 
   initMap();
@@ -292,3 +302,4 @@ $(function () {
   setTimeout(runNewQuery, 500);
 
 });
+// End document ready }}}
