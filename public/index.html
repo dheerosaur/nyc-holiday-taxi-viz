@@ -23,12 +23,9 @@
       <div class="date-speed">Speed: <span class="timeFactor"></span> mins per second</div>
     </div>
     <div class= "controls">
-      <button type="button" class="btn btn-default slower">
-        <i class="glyphicon glyphicon-backward"></i> Slower
-      </button>
-      <button type="button" class="btn btn-default faster">
-        Faster <i class="glyphicon glyphicon-forward"></i>
-      </button>
+      <button type="button" class="btn btn-default">10 min/sec</button>
+      <button type="button" class="btn btn-default">30 min/sec</button>
+      <button type="button" class="btn btn-default">1 hour/sec</button>
     </div>
   </div>
 
@@ -77,14 +74,18 @@
       </div>  
     </div>
 
-    <h4 class="box-heading">Date range</h4>
-    <div class="input-daterange input-group">
-      <input type="text" class="form-control" id="startDate" value="2013-12-21" />
-        <span class="input-group-addon">..</span>
-      <input type="text" class="form-control" id="endDate" value="2013-12-22" />
+    <div class="hide">
+      <h4 class="box-heading">Date range</h4>
+      <div class="input-daterange input-group">
+        <input type="text" class="form-control" id="startDate" value="2013-11-15" />
+          <span class="input-group-addon">..</span>
+        <input type="text" class="form-control" id="endDate" value="2013-12-31" />
+      </div>
+
+      <br>
+      <input type="submit" class="btn btn-default submit" value="Update">
     </div>
 
-    <br><input type="submit" class="btn btn-default submit" value="Update">
   </form>
 
   <div class="airlines box">
