@@ -122,7 +122,6 @@ function animatePaths (rawData) {
 
   function pathTransition (d, i) {
     var path = this, l = path.getTotalLength()
-      , airport = d.properties.terminal.slice(0, 3)
       , endPoint = path.getPointAtLength(l);
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
@@ -140,16 +139,18 @@ function animatePaths (rawData) {
       .each('end', function (d) {
         var terminal = d.properties.terminal
           , p = path.getPointAtLength(l);
-        marker.attr('class', airport);
-
-        d3.select(this).remove();
         updateCounts(terminal);
+        marker.attr('class', terminal.slice(0, 3));
+
         drawn = drawn + 1;
-        if (drawn == resultCount) fetchNextChunk();
+        if (drawn == resultCount) {
+          fetchNextChunk();
+        }
       })
       .attrTween('stroke-dasharray', function () {
         return d3.interpolateString('0,' + l, l + ',' + l);
-      });
+      })
+      .remove();
   }
 
   map.on('viewreset', onViewReset);
