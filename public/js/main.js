@@ -283,6 +283,6 @@ $(function () {
   $('#begin').click(function () {
     $('.overlay').hide();
     runNewQuery();
-  }).click();
+  });
 });
 // End document ready }}}

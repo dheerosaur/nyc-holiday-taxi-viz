@@ -175,14 +175,15 @@ circle.LGA {
   font-weight: 300;
 }
 .overlay {
-  position: relative;
+  position: absolute;
   top: 50%;
+  left: 50%;
   bottom: 0;
   height: auto;
   color:#333333;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
   z-index: 500;
 }
   .container.overlay {
