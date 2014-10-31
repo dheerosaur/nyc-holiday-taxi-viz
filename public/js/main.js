@@ -1,12 +1,12 @@
 // Utility functions {{{
 
   function translatePoint(d) {
-    var point = map.latLngToLayerPoint(new L.LatLng(d[1],d[0]));
-    return "translate(" + point.x + "," + point.y + ")";
+    var point = map.latLngToLayerPoint(new L.LatLng(d.lat, d.lng));
+    return d3.select(this).attr({cx: point.x, cy: point.y});
   }
 
-  function coordToLatLon(coord) {
-    var point = map.layerPointToLatLng(new L.Point(coord[0], coord[1]));
+  function pointToLatLon(p) {
+    var point = map.layerPointToLatLng(new L.Point(p.x, p.y));
     return point;
   }
 
@@ -77,18 +77,18 @@ function updateTimer () {
   timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
 }
 
-function updateCounts (props) {
-  var t = props.terminal
-    , countId = '#count-' + t.replace(' ', '-');
-  counts[t]++;
-  $(countId).text(counts[t]);
+function updateCounts (terminal) {
+  var countId = '#count-' + terminal.replace(' ', '-');
+  counts[terminal]++;
+  $(countId).text(counts[terminal]);
 }
 // End time and counts }}}
 
 // Animation and markers {{{
 function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
-  g.selectAll('path').remove();
+  var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  svg.selectAll('path').remove();
   if (resultCount === 0) { fetchNextChunk(); return; }
 
   var startTime = getNYCTime(rawData[0].pickupTime)
@@ -107,8 +107,7 @@ function animatePaths (rawData) {
     .data(data.features)
     .enter().append('path')
     .attr('class', function (d) {
-      return ('trip-' + d.properties.key) + ' ' +
-             ('from-' + d.properties.terminal.slice(0, 3));
+      return ('from-' + d.properties.terminal.slice(0, 3));
     });
 
   g.selectAll('path').each(function (d, i) {
@@ -124,8 +123,11 @@ function animatePaths (rawData) {
 
   function pathTransition (d, i) {
     var path = this, l = path.getTotalLength()
-      , airport = d.properties.terminal.split(' ')[0];
-    var marker = g.append('circle').attr({r: 2, 'class': airport});
+      , airport = d.properties.airport
+      , endPoint = path.getPointAtLength(l);
+    var marker = g.append('circle')
+      .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
+      .datum(pointToLatLon(endPoint));
 
     d3.select(path)
       .transition()
@@ -137,17 +139,17 @@ function animatePaths (rawData) {
         this.style.opacity = 0.8;
       })
       .each('end', function (d) {
-        var p = path.getPointAtLength(l);
-        marker.attr('transform', 'translate(' + p.x + ',' + p.y + ')').datum(p);
+        var terminal = d.properties.terminal
+          , p = path.getPointAtLength(l);
+        marker.attr('class', airport);
 
         d3.select(this).remove();
-        updateCounts(d.properties);
+        updateCounts(terminal);
         drawn = drawn + 1;
         if (drawn == resultCount) fetchNextChunk();
       })
       .attrTween('stroke-dasharray', function () {
-        var i = d3.interpolateString('0,' + l, l + ',' + l);
-        return function (t) { return i(t); };
+        return d3.interpolateString('0,' + l, l + ',' + l);
       });
   }
 
@@ -157,22 +159,18 @@ function animatePaths (rawData) {
 
   function reset () {
     var bounds = d3path.bounds(data)
-      , topLeft = bounds[0]
-      , bottomRight = bounds[1];
+      , x = bounds[0][0] , y = bounds[0][1]
+      , dx = bounds[1][0], dy = bounds[1][1];
 
-    svg.attr("width", bottomRight[0] - topLeft[0] + 100)
-      .attr("height", bottomRight[1] - topLeft[1] + 100)
-      .style("left", topLeft[0] - 50 + "px")
-      .style("top", topLeft[1] - 50 + "px");
-    g.attr("transform", "translate(" + (-topLeft[0]+50) + "," + (-topLeft[1]+50)+ ")");
+    svg.attr({width: dx - x, height: dy - y})
+      .style({left: x, top: y})
+    g.attr("transform", "translate(" + -x + "," + -y+ ")");
     feature.attr("d", d3path);
   }
 
   function onViewReset () {
     reset();  // Shift cirlces to correct latLng as well
-    g.selectAll('circle[done]').attr('transform', function (d) {
-      return translatePoint([d.lng, d.lat]);
-    });
+    g.selectAll('circle').each(translatePoint)
   }
 }
 // End Animation and Markers }}}

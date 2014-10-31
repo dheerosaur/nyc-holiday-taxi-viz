@@ -91,7 +91,8 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   }
 
 svg {
-    position: relative;
+  position: relative;
+  background: rgba(0,0,0,.4);
 }
 
 path {
@@ -112,16 +113,19 @@ path {
   }
 
 circle {
-  fill: yellow;
+  opacity: 0;
   stroke-width: 0;
-  opacity: .8;
 }
 
-circle.LGA {
-  fill: #F0967B;
-  stroke: red;
-  stroke-width: 1;
+circle.JFK,
+circle.LGA,
+circle.EWR {
+  opacity: 1
 }
+
+circle.JFK { fill: yellow; }
+circle.LGA { fill: red; }
+circle.EWR { fill: green; }
 
 .axis path,
 .axis line {
