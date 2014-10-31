@@ -2,7 +2,8 @@
 
   function translatePoint(d) {
     var point = map.latLngToLayerPoint(new L.LatLng(d.lat, d.lng));
-    return d3.select(this).attr({cx: point.x, cy: point.y});
+    this.setAttribute('cx', point.x)
+    this.setAttribute('cy', point.y);
   }
 
   function pointToLatLon(p) {
@@ -23,7 +24,7 @@
 // End utility functions }}}
 
 // Map and SVG {{{
-var map, svg, g, transform, d3path;
+var map, transform, d3path;
 
 function initMap () {
   map = L.map('map', {zoomControl: false}).setView([40.708, -73.954], 12);
@@ -40,8 +41,6 @@ function initMap () {
 }
 
 function initSVG() {
-  svg = d3.select(map.getPanes().overlayPane).append("svg");
-  g = svg.append("g").attr("class", "leaflet-zoom-hide");
   transform = d3.geo.transform({ point: projectPoint });
   d3path = d3.geo.path().projection(transform);
 }
@@ -87,8 +86,8 @@ function updateCounts (terminal) {
 // Animation and markers {{{
 function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
+  var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
-  svg.selectAll('path').remove();
   if (resultCount === 0) { fetchNextChunk(); return; }
 
   var startTime = getNYCTime(rawData[0].pickupTime)
@@ -123,7 +122,7 @@ function animatePaths (rawData) {
 
   function pathTransition (d, i) {
     var path = this, l = path.getTotalLength()
-      , airport = d.properties.airport
+      , airport = d.properties.terminal.slice(0, 3)
       , endPoint = path.getPointAtLength(l);
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
@@ -153,7 +152,6 @@ function animatePaths (rawData) {
       });
   }
 
-  map.off('viewreset');
   map.on('viewreset', onViewReset);
   reset();
 
@@ -169,7 +167,6 @@ function animatePaths (rawData) {
   }
 
   function onViewReset () {
-    reset();  // Shift cirlces to correct latLng as well
     g.selectAll('circle').each(translatePoint)
   }
 }
@@ -220,11 +217,7 @@ function createQuery () {
 
 function runNewQuery () {
   createQuery();
-
-  // Clear all existing paths, circles, timeouts
   queryTime = new Date();
-  g.selectAll('path').transition(0);
-  g.selectAll('circle').remove();
 
   // Clear counts. Hide/show stats as required
   _.each(allTerminals, function (t) { counts[t] = 0; });
@@ -241,16 +234,6 @@ function runNewQuery () {
 
 // jQuery events {{{
 function initEvents () {
-
-  /*
-  $('.input-daterange').datepicker({
-    format: 'yyyy-mm-dd',
-    startDate: '2013-11-15',
-    endDate: '2013-12-31'
-  });
-
-  $('#form').submit(runNewQuery);
-  */
 
   $('.speed').click(function () {
     var speed = $(this).data('speed');
