@@ -62,6 +62,50 @@ function getLineFeature (trip, index) {
 }
 // End Map and SVG }}}
 
+// Graph {{{
+var rects;
+
+function initGraph () {
+  var $graph = $('.graph')
+    , width = $graph.width() - 60
+    , height = $graph.height() - 40;
+
+  var data = tripsPerDate;
+  var x = d3.scale.ordinal()
+    .domain(data.map(function (d) { return d[0]; }))
+    .rangeBands([0, width]);
+  var y = d3.scale.linear()
+    .domain([0, d3.max(data, function (d) { return d[1]; })])
+    .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x).orient('bottom')
+    .tickFormat(function (d) { return d.slice(3); });
+  var yAxis = d3.svg.axis()
+    .scale(y).orient('left').ticks(6);
+
+  var chart = d3.select('.chart').attr({
+    width: width + 60, height: height + 40
+  }).append('g');
+
+  chart.append('g').attr('class', 'x axis')
+    .attr('transform', 'translate(40,' + (height + 20) + ')')
+    .call(xAxis);
+  chart.append('g').attr('class', 'y axis')
+    .attr('transform', 'translate(40, 20)')
+    .call(yAxis);
+
+  var barWidth = width = x.rangeBand() / 2;
+  chart.selectAll('.bar').data(data)
+    .enter().append('rect')
+    .attr('class', 'bar')
+    .attr('x', function (d) { return 50 + x(d[0]); })
+    .attr('width', x.rangeBand() / 2)
+    .attr('y', function (d) { return y(d[1]) + 20; })
+    .attr('height', function (d) { return height - y(d[1]); });
+}
+// End Graph }}}
+
 // Time and Counts {{{
 var time = moment()
   , timeFactor = 10
