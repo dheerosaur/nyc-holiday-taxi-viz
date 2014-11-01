@@ -243,7 +243,7 @@ function initEvents () {
 
   // Show countries/airlines when user hovers on terminal
   $('.terminals .checkbox').hover(function () {
-    var termClass = $('input', this).val().replace(' ', '-');
+    var termClass = $('input', this).val();
     $('.airlines > div').hide();
     $('.airlines > div.t-' + termClass).show();
     $('.airlines').show();
