@@ -162,23 +162,21 @@ function animatePaths (rawData) {
       return ('from-' + d.properties.terminal.slice(0, 3));
     });
 
+  // var pkey = rawData[0].pickupTime.slice(11, 16);
+  reset();
+
   adjustTimer(startTime);
-
-  g.selectAll('path').each(function (d, i) {
-    var path = this
-      , pickup = d.properties.pickupTime
-      , after = (pickup - time) / (60 * timeFactor);
-    setTimeout(function () {
-      time = moment(pickup).zone('-05:00');
-      pathTransition.call(path, d, i);
-    }, after / 5);
-  });
-
   $('.bar.'+ time.format('MM-DD')).css({fill: 'orange'});
 
-  function pathTransition (d, i) {
-    var path = this, l = path.getTotalLength()
-      , endPoint = path.getPointAtLength(l);
+  g.selectAll('path').each(pathTransition);
+
+  function pathTransition (d) {
+    var path = this;
+
+    var l = path.getTotalLength()
+      , endPoint = path.getPointAtLength(l)
+      , pickup = d.properties.pickupTime
+      , delay = (pickup - time) / (60 * timeFactor);
 
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
@@ -186,33 +184,33 @@ function animatePaths (rawData) {
 
     d3.select(path)
       .transition()
+      .delay(delay)
       .duration(function (d) {
         var duration = d.properties.duration;
         return duration * 1000 / ( 60 * timeFactor);
       })
       .each('start', function (d) {
         this.style.opacity = 1;
+        time = moment(d.properties.pickup).zone('-05:00');
         if (d.properties.key === halfKey) {
           getNextChunk();
         }
       })
       .each('end', function (d) {
-        var terminal = d.properties.terminal
-          , p = path.getPointAtLength(l);
+        var terminal = d.properties.terminal;
         updateCounts(terminal);
         marker.attr('class', terminal.slice(0, 3));
 
         drawn = drawn + 1;
         if (drawn === resultCount) { feature = null; }
       })
-      //.attrTween('stroke-dasharray', function () {
-        //return d3.interpolateString('0,' + l, l + ',' + l);
-      //})
+      .attrTween('stroke-dasharray', function () {
+        return d3.interpolateString('0,' + l, l + ',' + l);
+      })
       .remove();
   }
 
   map.on('viewreset', onViewReset);
-  reset();
 
   function reset () {
     var bounds = d3path.bounds(data)
@@ -222,7 +220,7 @@ function animatePaths (rawData) {
     svg.attr({width: dx - x, height: dy - y})
       .style({left: x, top: y})
     g.attr("transform", "translate(" + -x + "," + -y+ ")");
-    feature.attr("d", d3path);
+    feature.attr('d', d3path)
   }
 
   function onViewReset () {
@@ -252,7 +250,7 @@ function getNextChunk () {
   }
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(4, 'hours').format(QF);
+    , end = current.add(2, 'hours').format(QF);
   TQ.currentStart = end;
 
   prefetchData();
@@ -275,10 +273,10 @@ function createQuery () {
 
 function prefetchData () {
   var first = moment(TQ.currentStart);
-  _.each(_.range(4), function () {
+  _.each(_.range(8), function () {
     getData({
       startDate: first.format(QF),
-      endDate: first.add(4, 'hours').format(QF)
+      endDate: first.add(2, 'hours').format(QF)
     });
   });
 }
