@@ -51,7 +51,7 @@ function getLineFeature (trip, index) {
     properties: {
       key: index,
       terminal: trip.terminal,
-      pickupTime: trip.pickupTime,
+      pickupTime: getNYCTime(trip.pickupTime),
       duration: trip.duration
     },
     geometry: {
@@ -111,8 +111,7 @@ function initGraph () {
 // End Graph }}}
 
 // Time and Counts {{{
-var time = moment()
-  , timeFactor = 10
+var time, timeFactor = 10
   , timer = setTimeout(function () {}, 1)
   , queryTime
   , counts = {};
@@ -121,7 +120,16 @@ function updateTimer () {
   time.add(1, 'minutes');
   $('.date').text(time.format('dddd, MMM DD'));
   $('.time').text(time.format('hh:mm a'));
-  timer = setTimeout(function () { updateTimer(); }, (1000 / timeFactor));
+  timer = setTimeout(updateTimer, (1000 / timeFactor));
+}
+
+function adjustTimer (startTime) {
+  startTime = moment(startTime).zone('-05:00');
+  if (!time.isBefore(startTime)) {
+    time = startTime;
+    clearTimeout(timer);
+    updateTimer();
+  }
 }
 
 function updateCounts (terminal) {
@@ -139,12 +147,8 @@ function animatePaths (rawData) {
   if (resultCount === 0) { getNextChunk(); return; }
 
   var startTime = getNYCTime(rawData[0].pickupTime)
-    , totalPaths = rawData.length, drawn = 0;
-
-  time = moment(startTime).zone('-05:00');
-  $('.bar.'+ time.format('MM-DD')).css({fill: 'orange'});
-  clearTimeout(timer);
-  updateTimer();
+    , totalPaths = rawData.length, drawn = 0
+    , halfKey = Math.floor(totalPaths / 2);
 
   var data = {
     type: 'FeatureCollection',
@@ -158,16 +162,19 @@ function animatePaths (rawData) {
       return ('from-' + d.properties.terminal.slice(0, 3));
     });
 
+  adjustTimer(startTime);
+
   g.selectAll('path').each(function (d, i) {
-    var path = this, lastQueryTime = queryTime
-      , pickup = getNYCTime(d.properties.pickupTime)
-      , after = (pickup - startTime) / (60 * timeFactor);
+    var path = this
+      , pickup = d.properties.pickupTime
+      , after = (pickup - time) / (60 * timeFactor);
     setTimeout(function () {
-      if (lastQueryTime !== queryTime) return;
       time = moment(pickup).zone('-05:00');
       pathTransition.call(path, d, i);
     }, after / 5);
   });
+
+  $('.bar.'+ time.format('MM-DD')).css({fill: 'orange'});
 
   function pathTransition (d, i) {
     var path = this, l = path.getTotalLength()
@@ -185,6 +192,9 @@ function animatePaths (rawData) {
       })
       .each('start', function (d) {
         this.style.opacity = 1;
+        if (d.properties.key === halfKey) {
+          getNextChunk();
+        }
       })
       .each('end', function (d) {
         var terminal = d.properties.terminal
@@ -193,14 +203,11 @@ function animatePaths (rawData) {
         marker.attr('class', terminal.slice(0, 3));
 
         drawn = drawn + 1;
-        if (drawn == resultCount) {
-          feature = null;
-          getNextChunk();
-        }
+        if (drawn === resultCount) { feature = null; }
       })
-      .attrTween('stroke-dasharray', function () {
-        return d3.interpolateString('0,' + l, l + ',' + l);
-      })
+      //.attrTween('stroke-dasharray', function () {
+        //return d3.interpolateString('0,' + l, l + ',' + l);
+      //})
       .remove();
   }
 
@@ -239,8 +246,10 @@ function getTerminals (selector) {
 }
 
 function getNextChunk () {
-  clearTimeout(timer);
-  if (TQ.currentStart >= TQ.endDate) return;
+  if (TQ.currentStart >= TQ.endDate) {
+    clearTimeout(timer);
+    return;
+  }
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
     , end = current.add(4, 'hours').format(QF);
@@ -277,6 +286,7 @@ function prefetchData () {
 function backgroundStart () {
   createQuery();
   queryTime = new Date();
+  time = moment(getNYCTime(TQ.startDate)).zone('-05:00')
 
   // Clear counts. Hide/show stats as required
   _.each(allTerminals, function (t) { counts[t] = 0; });
