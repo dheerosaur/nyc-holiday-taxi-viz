@@ -74,6 +74,35 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   font-size: 12px;
 }
 
+.graph.box {
+  left: 270px;
+  top: 10px;
+  right: 60px;
+  width: auto;
+  height: 145px;
+  padding: 0;
+}
+
+.chart {
+}
+  .bar {
+    fill: steelblue;
+    opacity: .8;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #bada55;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+  }
+  .axis text {
+    fill: #bada55;
+    stroke-width: 0;
+    font: 10px sans-serif;
+  }
+
 .box-heading {
   margin: 0 0 10px 0;
   font-size: 18px;
@@ -90,20 +119,20 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     opacity: .5;
   }
 
-path {
+#map path {
   opacity: 0;
   fill: none;
   stroke-width: 2px;
 }
-  path.from-JFK {
+  #map path.from-JFK {
     stroke: #3f9;
   }
 
-  path.from-LGA {
+  #map path.from-LGA {
     stroke: #fc0;
   }
 
-  path.from-EWR {
+  #map path.from-EWR {
    stroke: #099;
   }
 
@@ -121,18 +150,6 @@ circle.EWR {
 circle.JFK { fill: yellow; }
 circle.LGA { fill: red; }
 circle.EWR { fill: green; }
-
-.axis path,
-.axis line {
-      fill: none;
-      stroke: #FFF;
-      shape-rendering: crispEdges;
-      stroke-width:1;
-}
-
-.axis text {
-  stroke:white;
-}
 
 .area {
   fill: #3366FF;
