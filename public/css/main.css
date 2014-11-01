@@ -75,15 +75,15 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .graph.box {
-  left: 270px;
   top: 10px;
-  right: 60px;
-  width: auto;
+  left: 270px;
+  width: 600px;
   height: 145px;
   padding: 0;
 }
 
 .chart {
+  padding-left: 10px;
 }
   .bar {
     fill: steelblue;
@@ -100,7 +100,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   .axis text {
     fill: #bada55;
     stroke-width: 0;
-    font: 10px sans-serif;
+    font-size: 11px;
   }
 
 .box-heading {

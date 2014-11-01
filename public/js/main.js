@@ -80,7 +80,8 @@ function initGraph () {
 
   var xAxis = d3.svg.axis()
     .scale(x).orient('bottom')
-    .tickFormat(function (d) { return d.slice(3); });
+    .tickValues(['11-16', '11-26', '12-06', '12-16', '12-26'])
+    //.tickFormat(function (d) { return d.slice(3); });
   var yAxis = d3.svg.axis()
     .scale(y).orient('left').ticks(6);
 
@@ -95,12 +96,13 @@ function initGraph () {
     .attr('transform', 'translate(40, 20)')
     .call(yAxis);
 
-  var barWidth = width = x.rangeBand() / 2;
+  var barWidth = x.rangeBand() / 3
+    , barOffset = 40 + barWidth;
   chart.selectAll('.bar').data(data)
     .enter().append('rect')
-    .attr('class', 'bar')
-    .attr('x', function (d) { return 50 + x(d[0]); })
-    .attr('width', x.rangeBand() / 2)
+    .attr('class', function (d) { return 'bar ' + d[0]; })
+    .attr('x', function (d) { return barOffset + x(d[0]); })
+    .attr('width', barWidth)
     .attr('y', function (d) { return y(d[1]) + 20; })
     .attr('height', function (d) { return height - y(d[1]); });
 }
@@ -138,6 +140,7 @@ function animatePaths (rawData) {
     , totalPaths = rawData.length, drawn = 0;
 
   time = moment(startTime).zone('-05:00');
+  $('.bar.'+ time.format('MM-DD')).css({fill: 'orange'});
   clearTimeout(timer);
   updateTimer();
 
@@ -161,7 +164,7 @@ function animatePaths (rawData) {
       if (lastQueryTime !== queryTime) return;
       time = moment(pickup).zone('-05:00');
       pathTransition.call(path, d, i);
-    }, after);
+    }, after / 5);
   });
 
   function pathTransition (d, i) {
@@ -178,7 +181,7 @@ function animatePaths (rawData) {
         return duration * 1000 / ( 60 * timeFactor);
       })
       .each('start', function (d) {
-        this.style.opacity = 0.8;
+        this.style.opacity = 1;
       })
       .each('end', function (d) {
         var terminal = d.properties.terminal
@@ -303,6 +306,7 @@ $(function () {
   initMap();
   initSVG();
   initEvents();
+  initGraph();
 
   $('.checkbox input').attr('checked', 'checked');
 
