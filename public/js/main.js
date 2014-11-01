@@ -63,7 +63,10 @@ function getLineFeature (trip, index) {
 // End Map and SVG }}}
 
 // Graph {{{
-var rects;
+var tickValues = [
+  '11-16', '11-20', '11-25', '11-30', '12-01', '12-05',
+  '12-10', '12-15', '12-20', '12-25', '12-30'
+]
 
 function initGraph () {
   var $graph = $('.graph')
@@ -80,8 +83,7 @@ function initGraph () {
 
   var xAxis = d3.svg.axis()
     .scale(x).orient('bottom')
-    .tickValues(['11-16', '11-26', '12-06', '12-16', '12-26'])
-    //.tickFormat(function (d) { return d.slice(3); });
+    .tickValues(tickValues);
   var yAxis = d3.svg.axis()
     .scale(y).orient('left').ticks(6);
 
@@ -170,6 +172,7 @@ function animatePaths (rawData) {
   function pathTransition (d, i) {
     var path = this, l = path.getTotalLength()
       , endPoint = path.getPointAtLength(l);
+
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
       .datum(pointToLatLon(endPoint));
@@ -191,6 +194,7 @@ function animatePaths (rawData) {
 
         drawn = drawn + 1;
         if (drawn == resultCount) {
+          feature = null;
           fetchNextChunk();
         }
       })
@@ -216,6 +220,7 @@ function animatePaths (rawData) {
 
   function onViewReset () {
     g.selectAll('circle').each(translatePoint)
+    if (feature) feature.attr('d', d3path);
   }
 }
 // End Animation and Markers }}}
