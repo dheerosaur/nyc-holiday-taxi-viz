@@ -136,7 +136,7 @@ function animatePaths (rawData) {
   var resultCount = rawData.length , drawn = 0;
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
-  if (resultCount === 0) { fetchNextChunk(); return; }
+  if (resultCount === 0) { getNextChunk(); return; }
 
   var startTime = getNYCTime(rawData[0].pickupTime)
     , totalPaths = rawData.length, drawn = 0;
@@ -195,7 +195,7 @@ function animatePaths (rawData) {
         drawn = drawn + 1;
         if (drawn == resultCount) {
           feature = null;
-          fetchNextChunk();
+          getNextChunk();
         }
       })
       .attrTween('stroke-dasharray', function () {
@@ -226,14 +226,11 @@ function animatePaths (rawData) {
 // End Animation and Markers }}}
 
 // Fetching data {{{
-var TQ = {
-  terminals: [],
-  startDate: null,
-  endDate: null,
-  currentStart: null
-};
-var QF = 'YYYY-MM-DD HH:mm:ss';
-var allTerminals = getTerminals('.terminals input');
+var QF = 'YYYY-MM-DD HH:mm:ss'  // query format
+  , activeTerminals = []
+  , allTerminals = getTerminals('.terminals input')
+  , TQ = { startDate: null, endDate: null, currentStart: null }
+  , dataCache = {};
 
 function getTerminals (selector) {
   return $(selector).map(function () {
@@ -241,34 +238,43 @@ function getTerminals (selector) {
   }).get();
 }
 
-function fetchNextChunk () {
+function getNextChunk () {
   clearTimeout(timer);
   if (TQ.currentStart >= TQ.endDate) return;
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
     , end = current.add(4, 'hours').format(QF);
   TQ.currentStart = end;
-  fetchData({startDate: start, endDate: end});
+
+  prefetchData();
+  $.when(dataCache[start]).then(animatePaths);
 }
 
-function fetchData (query) {
-  if (TQ.terminals.length === 0) {
-    alert("Please select at least one terminal");
-    return;
+function getData (query) {
+  var key = query.startDate;
+  if ( !(key in dataCache) ) {
+    dataCache[key] = $.getJSON('/trip?', query);
   }
-  query.terminals = TQ.terminals;
-  var url = '/trip?' + $.param(query);
-  d3.json(url, animatePaths);
 }
 
 function createQuery () {
-  TQ.terminals = getTerminals('.terminals input:checked');
+  activeTerminals = getTerminals('.terminals input:checked');
   TQ.startDate = $('#startDate').val() + ' 00:00:00';
   TQ.endDate = $('#endDate').val() + ' 00:00:00';
   TQ.currentStart = TQ.startDate;
 }
 
-function runNewQuery () {
+function prefetchData () {
+  var first = moment(TQ.currentStart);
+  _.each(_.range(4), function () {
+    getData({
+      startDate: first.format(QF),
+      endDate: first.add(4, 'hours').format(QF)
+    });
+  });
+}
+
+function backgroundStart () {
   createQuery();
   queryTime = new Date();
 
@@ -276,16 +282,19 @@ function runNewQuery () {
   _.each(allTerminals, function (t) { counts[t] = 0; });
   $('.tcount').html('0');
 
-  $('.terminals .checkbox').each(function () {
-    var checked = $('input', this).is(':checked');
-    $(this).toggleClass('striked', !checked);
-  });
-  
-  fetchNextChunk();
+  checkboxToggled();
+  prefetchData();
 }
 // End Fetching data }}}
 
 // jQuery events {{{
+function checkboxToggled () {
+  $('.terminals .checkbox').each(function () {
+    var checked = $('input', this).is(':checked');
+    $(this).toggleClass('striked', !checked);
+  });
+}
+  
 function initEvents () {
 
   $('.speed').click(function () {
@@ -303,6 +312,8 @@ function initEvents () {
     $('.airlines').hide();
   });
 
+  $('.terminals .checkbox input').change(checkboxToggled);
+
 }
 // End jQuery events }}}
 
@@ -312,12 +323,13 @@ $(function () {
   initSVG();
   initEvents();
   initGraph();
+  backgroundStart();
 
   $('.checkbox input').attr('checked', 'checked');
 
   $('#begin').click(function () {
     $('.overlay').hide();
-    runNewQuery();
+    getNextChunk();
   });
 });
 // End document ready }}}
