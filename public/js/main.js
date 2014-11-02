@@ -331,9 +331,10 @@ $(function () {
   initSVG();
   initEvents();
   initGraph();
-  backgroundStart();
 
   $('.checkbox input').attr('checked', 'checked');
+
+  backgroundStart();
 
   $('#begin').click(function () {
     $('.overlay').hide();
