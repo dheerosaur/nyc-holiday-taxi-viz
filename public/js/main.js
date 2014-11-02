@@ -64,8 +64,8 @@ function getLineFeature (trip, index) {
 
 // Graph {{{
 var tickValues = [
-  '11-16', '11-20', '11-25', '11-30', '12-01', '12-05',
-  '12-10', '12-15', '12-20', '12-25', '12-30'
+  '11-16', '11-21', '11-26', '12-01', '12-05',
+  '12-11', '12-16', '12-21', '12-26', '12-31'
 ]
 
 function initGraph () {
@@ -159,7 +159,7 @@ function animatePaths (rawData) {
     .data(data.features)
     .enter().append('path')
     .attr('class', function (d) {
-      return ('from-' + d.properties.terminal.slice(0, 3));
+      return d.properties.terminal;
     });
 
   // var pkey = rawData[0].pickupTime.slice(11, 16);
@@ -199,7 +199,7 @@ function animatePaths (rawData) {
       .each('end', function (d) {
         var terminal = d.properties.terminal;
         updateCounts(terminal);
-        marker.attr('class', terminal.slice(0, 3));
+        marker.attr('class', terminal);
 
         drawn = drawn + 1;
         if (drawn === resultCount) { feature = null; }
@@ -298,8 +298,10 @@ function backgroundStart () {
 // jQuery events {{{
 function checkboxToggled () {
   $('.terminals .checkbox').each(function () {
-    var checked = $('input', this).is(':checked');
-    $(this).toggleClass('striked', !checked);
+    var $input = $('input', this);
+    var disabled = !$input.is(':checked');
+    $(this).toggleClass('striked', disabled);
+    $('#map').toggleClass($input.val() + '-hide', disabled);
   });
 }
   

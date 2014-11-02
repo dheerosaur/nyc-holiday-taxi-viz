@@ -124,15 +124,15 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   fill: none;
   stroke-width: 2px;
 }
-  #map path.from-JFK {
+  #map path[class^='JFK'] {
     stroke: #3f9;
   }
 
-  #map path.from-LGA {
+  #map path[class^='LGA'] {
     stroke: #fc0;
   }
 
-  #map path.from-EWR {
+  #map path[class^='EWR'] {
    stroke: #099;
   }
 
@@ -141,15 +141,32 @@ circle {
   stroke-width: 0;
 }
 
-circle.JFK,
-circle.LGA,
-circle.EWR {
-  opacity: 1
+
+circle[class^='JFK'] { 
+  opacity: 1;
+  fill: yellow;
+}
+circle[class^='LGA'] { 
+  opacity: 1;
+  fill: red;
+}
+circle[class^='EWR'] { 
+  opacity: 1;
+  fill: green;
 }
 
-circle.JFK { fill: yellow; }
-circle.LGA { fill: red; }
-circle.EWR { fill: green; }
+#map.JFKT23-hide .JFKT23,
+#map.JFKT1-hide .JFKT1,
+#map.JFKT4-hide .JFKT4,
+#map.JFKT5-hide .JFKT5,
+#map.JFKT7-hide .JFKT7,
+#map.JFKT8-hide .JFKT8,
+#map.LGAA-hide .LGAA,
+#map.LGAB-hide .LGAB,
+#map.LGAC-hide .LGAC,
+#map.LGAD-hide .LGAD {
+  display: none;
+}
 
 .area {
   fill: #3366FF;
