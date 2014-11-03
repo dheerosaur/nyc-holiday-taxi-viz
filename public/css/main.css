@@ -75,8 +75,8 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .graph.box {
-  top: 10px;
-  left: 270px;
+  bottom: 10px;
+  left: 10px;
   width: 600px;
   height: 145px;
   padding: 0;
@@ -93,12 +93,12 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   .axis path,
   .axis line {
     fill: none;
-    stroke: #bada55;
+    stroke: #eee;
     stroke-width: 1px;
     shape-rendering: crispEdges;
   }
   .axis text {
-    fill: #bada55;
+    fill: #eee;
     stroke-width: 0;
     font-size: 11px;
   }
