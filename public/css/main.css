@@ -86,8 +86,8 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   padding-left: 10px;
 }
   .bar {
-    fill: steelblue;
-    opacity: .8;
+    fill: #eee;
+    opacity: .5;
   }
 
   .axis path,
@@ -220,7 +220,7 @@ circle[class^='EWR'] {
   z-index: 500;
 }
   .container.overlay {
-    max-width: 800px;
+    max-width: 840px;
   }
   .overlay .jumbotron {
     background: rgba(220,220,220,.95);

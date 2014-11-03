@@ -166,7 +166,7 @@ function animatePaths (rawData) {
   reset();
 
   adjustTimer(startTime);
-  $('.bar.'+ time.format('MM-DD')).css({fill: 'orange'});
+  $('.bar.'+ time.format('MM-DD')).css({opacity: .8, fill: 'steelblue'});
 
   g.selectAll('path').each(pathTransition);
 
@@ -190,7 +190,7 @@ function animatePaths (rawData) {
         return duration * 1000 / ( 60 * timeFactor);
       })
       .each('start', function (d) {
-        this.style.opacity = 1;
+        this.style.opacity = .8;
         time = moment(d.properties.pickup).zone('-05:00');
         if (d.properties.key === halfKey) {
           getNextChunk();
@@ -199,7 +199,12 @@ function animatePaths (rawData) {
       .each('end', function (d) {
         var terminal = d.properties.terminal;
         updateCounts(terminal);
-        marker.attr('class', terminal);
+
+        marker.attr('class', terminal).transition()
+          .duration(4000).style('opacity', 0);
+
+        d3.select(this).transition().duration(500)
+          .style('opacity', 0).remove();
 
         drawn = drawn + 1;
         if (drawn === resultCount) { feature = null; }
@@ -207,7 +212,6 @@ function animatePaths (rawData) {
       .attrTween('stroke-dasharray', function () {
         return d3.interpolateString('0,' + l, l + ',' + l);
       })
-      .remove();
   }
 
   map.on('viewreset', onViewReset);
@@ -218,7 +222,7 @@ function animatePaths (rawData) {
       , dx = bounds[1][0], dy = bounds[1][1];
 
     svg.attr({width: dx - x, height: dy - y})
-      .style({left: x, top: y})
+      .style({left: x + 'px', top: y + 'px'})
     g.attr("transform", "translate(" + -x + "," + -y+ ")");
     feature.attr('d', d3path)
   }
