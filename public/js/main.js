@@ -215,7 +215,7 @@ function animatePaths (rawData) {
       })
       .each('start', function (d) {
         this.style.opacity = .8;
-        time = moment(d.properties.pickup).zone('-05:00');
+        adjustTimer(pickup);
         if (d.properties.key === halfKey) {
           getNextChunk();
         }
@@ -368,6 +368,7 @@ $(function () {
 
   $('#begin').click(function () {
     $('.overlay').hide();
+    updateTimer();
     getNextChunk();
   });
 });
