@@ -63,10 +63,12 @@ function getLineFeature (trip, index) {
 // End Map and SVG }}}
 
 // Graph {{{
-var tickValues = [
-  '11-16', '11-21', '11-26', '12-01', '12-05',
-  '12-11', '12-16', '12-21', '12-26', '12-31'
-]
+var dateTicks = {
+  '11-16': 'Nov 16th',
+  '11-28': 'Thanks Giving',
+  '12-10': 'Dec 10th',
+  '12-25': 'Christmas'
+}
 
 function initGraph () {
   var $graph = $('.graph')
@@ -83,7 +85,8 @@ function initGraph () {
 
   var xAxis = d3.svg.axis()
     .scale(x).orient('bottom')
-    .tickValues(tickValues);
+    .tickValues(_.keys(dateTicks))
+    .tickFormat(function (t) { return dateTicks[t]; });
   var yAxis = d3.svg.axis()
     .scale(y).orient('left').ticks(6);
 
@@ -98,15 +101,36 @@ function initGraph () {
     .attr('transform', 'translate(40, 20)')
     .call(yAxis);
 
-  var barWidth = x.rangeBand() / 3
+  var barWidth = x.rangeBand() / 2
     , barOffset = 40 + barWidth;
   chart.selectAll('.bar').data(data)
     .enter().append('rect')
-    .attr('class', function (d) { return 'bar ' + d[0]; })
-    .attr('x', function (d) { return barOffset + x(d[0]); })
-    .attr('width', barWidth)
-    .attr('y', function (d) { return y(d[1]) + 20; })
-    .attr('height', function (d) { return height - y(d[1]); });
+    .each(function (d) {
+      var date = d[0], count = d[1];
+      d3.select(this).attr({
+        'class': 'bar ' + date,
+        'x': barOffset + x(date),
+        'y': y(count) + 20,
+        'width': barWidth,
+        'height': height - y(count),
+      })
+    })
+    .on('mouseover', updateTooltip)
+    .on('mouseout', clearTooltip);
+
+  var tooltip = d3.select('.graph-tip');
+
+  function clearTooltip () {
+    tooltip.html('');
+  }
+
+  function updateTooltip (d) {
+    var date = d[0], count = d[1]
+      , formatted = moment('2013-' + d[0]).format('MMM Do');
+    tooltip.html(formatted + ' - Trips: ' + count)
+      .style('left', x(date) + 'px');
+  }
+
 }
 // End Graph }}}
 
@@ -166,7 +190,7 @@ function animatePaths (rawData) {
   reset();
 
   adjustTimer(startTime);
-  $('.bar.'+ time.format('MM-DD')).css({opacity: .8, fill: 'steelblue'});
+  $('.bar.'+ time.format('MM-DD')).css('fill', '#fff');
 
   g.selectAll('path').each(pathTransition);
 

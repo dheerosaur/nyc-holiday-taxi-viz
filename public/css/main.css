@@ -82,25 +82,41 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   padding: 0;
 }
 
+.graph-tip {
+  position: absolute;
+  top: 10px;
+  color: #fff;
+  background: #000;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 500;
+}
+
 .chart {
   padding-left: 10px;
 }
   .bar {
-    fill: #eee;
-    opacity: .5;
+    opacity: .9;
+    fill: steelblue;
+    stroke: transparent;
+    stroke-width: 2px;
+  }
+  .bar:hover {
+    stroke: #fff;
   }
 
   .axis path,
   .axis line {
     fill: none;
-    stroke: #eee;
+    stroke: #ddd;
     stroke-width: 1px;
     shape-rendering: crispEdges;
   }
   .axis text {
-    fill: #eee;
+    fill: #ddd;
     stroke-width: 0;
     font-size: 11px;
+    font-weight: 400;
   }
 
 .box-heading {
