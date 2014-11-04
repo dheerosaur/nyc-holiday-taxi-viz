@@ -155,7 +155,7 @@ function updateCounts (terminal) {
 // Animation and markers {{{
 function animatePaths (response) {
   var features = response.features
-    , totalPaths = features.length, drawn = 0
+    , totalPaths = features.length
     , startTime = getNYCTime(features[0].properties.pickupTime)
     , halfKey = Math.floor(totalPaths / 2);
 
@@ -164,71 +164,61 @@ function animatePaths (response) {
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-  var data = {
-    type: 'FeatureCollection',
-    features: features
-  };
-
-  var feature = g.selectAll('path')
-    .data(data.features)
-    .enter().append('path')
-    .attr('class', function (d) {
-      return d.properties.terminal;
-    });
-
-  var pkey = moment(startTime).format('DD-HH');
+  // var pkey = moment(startTime).format('DD-HH');
   reset();
 
   adjustTimer(startTime);
   $('.bar.'+ time.format('MM-DD')).css('fill', '#fff');
 
-  g.selectAll('path').each(function (d) {
-    var path = this
-      , pickup = getNYCTime(d.properties.pickupTime)
+  _.each(features, function (feature) {
+    var trip = feature.properties;
+    var pickup = getNYCTime(trip.pickupTime)
       , delay = (pickup - time) / (60 * timeFactor);
 
     setTimeout(function () {
-      path.setAttribute('d', d3path(d));
-      pathTransition.call(path, d);
+      g.append('path')
+        .attr('d', d3path(feature))
+        .datum(trip)
+        .each(pathTransition);
     }, delay);
   });
 
   function pathTransition (d) {
-    var path = this;
-
-    var l = path.getTotalLength()
-      , endPoint = path.getPointAtLength(l)
-      , pickup = getNYCTime(d.properties.pickupTime);
+    var l = this.getTotalLength()
+      , endPoint = this.getPointAtLength(l)
+      , pickup = getNYCTime(d.pickupTime);
 
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
       .datum(pointToLatLon(endPoint));
 
-    d3.select(path)
+    var duration = d.duration * 1000 / ( 60 * timeFactor); 
+
+    d3.select(this)
+      .attr('class', d.terminal)
       .transition()
-      .duration(function (d) {
-        var duration = d.properties.duration;
-        return duration * 1000 / ( 60 * timeFactor);
-      })
+      .duration(duration)
       .each('start', function (d) {
         this.style.opacity = .8;
         adjustTimer(pickup);
-        if (d.properties.key === halfKey) {
+        if (d.key === halfKey) {
           getNextChunk();
         }
       })
       .each('end', function (d) {
-        var terminal = d.properties.terminal;
-        updateCounts(terminal);
+        updateCounts(d.terminal);
 
-        marker.attr('class', terminal).transition()
-          .duration(4000).style('opacity', 0);
+        marker.attr('class', d.terminal)
+          .transition()
+          .duration(4000)
+          .style('opacity', 0);
 
-        d3.select(this).transition().duration(500)
-          .style('opacity', 0).remove();
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .style('opacity', 0)
+          .remove();
 
-        drawn = drawn + 1;
-        if (drawn === totalPaths) { feature = null; }
       })
       .attrTween('stroke-dasharray', function () {
         return d3.interpolateString('0,' + l, l + ',' + l);
@@ -247,7 +237,6 @@ function animatePaths (response) {
 
   function onViewReset () {
     g.selectAll('circle').each(translatePoint)
-    if (feature) feature.attr('d', d3path);
   }
 }
 // End Animation and Markers }}}
