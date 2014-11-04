@@ -55,13 +55,18 @@ function buildQuery(params) {
   return query.toQuery();
 }
 
+function getNYCTime (s) {
+  var formatted = s.replace(' ', 'T') + '-05:00';
+  return new Date(formatted);
+}
+
 function createGeojson(rawData, callback) {
   var features = [];
   var bounds = {minLats: [], maxLats: [], minLngs: [], maxLngs: []};
 
   for (var i=0; i < rawData.length; i++) {
-    var row = rawData[i];
-    var decoded = polyline.decode(row.direction);
+    var trip = rawData[i];
+    var decoded = polyline.decode(trip.direction);
     bounds.minLats.push(decoded.bounds.minLat);
     bounds.maxLats.push(decoded.bounds.maxLat);
     bounds.minLngs.push(decoded.bounds.minLng);
@@ -71,8 +76,10 @@ function createGeojson(rawData, callback) {
       type: 'Feature',
       properties: {
         key: i,
-        duration: row.duration,
-        end: decoded.end
+        end: decoded.end,
+        terminal: trip.terminal,
+        duration: trip.duration,
+        pickupTime: trip.pickupTime
       },
       geometry: {
         type: 'LineString',

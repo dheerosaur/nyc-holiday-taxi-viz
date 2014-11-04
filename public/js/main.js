@@ -6,9 +6,14 @@
     this.setAttribute('cy', point.y);
   }
 
+  function calculateBounds(b) {
+    var topLeft = map.latLngToLayerPoint(new L.LatLng(b.maxLat, b.minLng));
+    var bottomRight = map.latLngToLayerPoint(new L.LatLng(b.minLat, b.maxLng));
+    return [ topLeft, bottomRight ];
+  }
+
   function pointToLatLon(p) {
-    var point = map.layerPointToLatLng(new L.Point(p.x, p.y));
-    return point;
+    return map.layerPointToLatLng(new L.Point(p.x, p.y));
   }
 
   function projectPoint (x, y) {
@@ -43,22 +48,6 @@ function initMap () {
 function initSVG() {
   transform = d3.geo.transform({ point: projectPoint });
   d3path = d3.geo.path().projection(transform);
-}
-
-function getLineFeature (trip, index) {
-  return {
-    type: 'Feature',
-    properties: {
-      key: index,
-      terminal: trip.terminal,
-      pickupTime: getNYCTime(trip.pickupTime),
-      duration: trip.duration
-    },
-    geometry: {
-      type: 'LineString',
-      coordinates: polylineDecode(trip.direction)
-    }
-  }
 }
 // End Map and SVG }}}
 
@@ -164,19 +153,20 @@ function updateCounts (terminal) {
 // End time and counts }}}
 
 // Animation and markers {{{
-function animatePaths (rawData) {
-  var resultCount = rawData.length , drawn = 0;
+function animatePaths (response) {
+  var features = response.features
+    , totalPaths = features.length, drawn = 0
+    , startTime = getNYCTime(features[0].properties.pickupTime)
+    , halfKey = Math.floor(totalPaths / 2);
+
+  if (totalPaths === 0) { getNextChunk(); return; }
+
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
-  if (resultCount === 0) { getNextChunk(); return; }
-
-  var startTime = getNYCTime(rawData[0].pickupTime)
-    , totalPaths = rawData.length, drawn = 0
-    , halfKey = Math.floor(totalPaths / 2);
 
   var data = {
     type: 'FeatureCollection',
-    features: _.map(rawData, getLineFeature)
+    features: features
   };
 
   var feature = g.selectAll('path')
@@ -186,7 +176,7 @@ function animatePaths (rawData) {
       return d.properties.terminal;
     });
 
-  // var pkey = rawData[0].pickupTime.slice(11, 16);
+  var pkey = moment(startTime).format('DD-HH');
   reset();
 
   adjustTimer(startTime);
@@ -199,7 +189,7 @@ function animatePaths (rawData) {
 
     var l = path.getTotalLength()
       , endPoint = path.getPointAtLength(l)
-      , pickup = d.properties.pickupTime
+      , pickup = getNYCTime(d.properties.pickupTime)
       , delay = (pickup - time) / (60 * timeFactor);
 
     var marker = g.append('circle')
@@ -231,7 +221,7 @@ function animatePaths (rawData) {
           .style('opacity', 0).remove();
 
         drawn = drawn + 1;
-        if (drawn === resultCount) { feature = null; }
+        if (drawn === totalPaths) { feature = null; }
       })
       .attrTween('stroke-dasharray', function () {
         return d3.interpolateString('0,' + l, l + ',' + l);
@@ -241,13 +231,11 @@ function animatePaths (rawData) {
   map.on('viewreset', onViewReset);
 
   function reset () {
-    var bounds = d3path.bounds(data)
-      , x = bounds[0][0] , y = bounds[0][1]
-      , dx = bounds[1][0], dy = bounds[1][1];
-
+    var bounds = calculateBounds(response.mapBounds)
+      , x = bounds[0].x, y = bounds[0].y, dx = bounds[1].x, dy = bounds[1].y;
     svg.attr({width: dx - x, height: dy - y})
-      .style({left: x + 'px', top: y + 'px'})
-    g.attr("transform", "translate(" + -x + "," + -y+ ")");
+      .style({left: x + 'px', top: y + 'px'});
+    g.attr("transform", "translate(" + -x + "," + -y + ")");
     feature.attr('d', d3path)
   }
 
