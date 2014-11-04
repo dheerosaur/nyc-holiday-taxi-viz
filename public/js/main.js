@@ -182,15 +182,23 @@ function animatePaths (response) {
   adjustTimer(startTime);
   $('.bar.'+ time.format('MM-DD')).css('fill', '#fff');
 
-  g.selectAll('path').each(pathTransition);
+  g.selectAll('path').each(function (d) {
+    var path = this
+      , pickup = getNYCTime(d.properties.pickupTime)
+      , delay = (pickup - time) / (60 * timeFactor);
+
+    setTimeout(function () {
+      path.setAttribute('d', d3path(d));
+      pathTransition.call(path, d);
+    }, delay);
+  });
 
   function pathTransition (d) {
     var path = this;
 
     var l = path.getTotalLength()
       , endPoint = path.getPointAtLength(l)
-      , pickup = getNYCTime(d.properties.pickupTime)
-      , delay = (pickup - time) / (60 * timeFactor);
+      , pickup = getNYCTime(d.properties.pickupTime);
 
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
@@ -198,7 +206,6 @@ function animatePaths (response) {
 
     d3.select(path)
       .transition()
-      .delay(delay)
       .duration(function (d) {
         var duration = d.properties.duration;
         return duration * 1000 / ( 60 * timeFactor);
@@ -236,7 +243,6 @@ function animatePaths (response) {
     svg.attr({width: dx - x, height: dy - y})
       .style({left: x + 'px', top: y + 'px'});
     g.attr("transform", "translate(" + -x + "," + -y + ")");
-    feature.attr('d', d3path)
   }
 
   function onViewReset () {
