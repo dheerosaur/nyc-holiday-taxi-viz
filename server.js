@@ -1,20 +1,13 @@
-var fs = require('fs')
+var express = require('express')
+  , polyline = require('./polyline.js')
   , sql = require('sql')
-  , express = require('express')
-  , polyline = require('polyline')
   , sqlite3 = require('sqlite3')
   , _ = require('underscore');
 
 var app = express()
   , port = process.env.PORT || 8000
+  , router = express.Router()
   , db = new sqlite3.Database('db');
-
-var featureCollection = {
-  type: "FeatureCollection",
-  features: []
-};
-
-var router = express.Router();
 
 app.use(express.static(__dirname + '/public'));
 
@@ -31,7 +24,9 @@ router.get('/trip', function (req, res, next) {
   db.serialize(function () {
     db.all(queryText, sql.values, function (err, result) {
       if (err) { console.log(err); }
-      res.json(result);
+      createGeojson(result, function (features) {
+        res.json(features);
+      });
     });
   });
 });
@@ -61,27 +56,42 @@ function buildQuery(params) {
 }
 
 function createGeojson(rawData, callback) {
+  var features = [];
+  var bounds = {minLats: [], maxLats: [], minLngs: [], maxLngs: []};
 
-  featureCollection.features = [];
+  for (var i=0; i < rawData.length; i++) {
+    var row = rawData[i];
+    var decoded = polyline.decode(row.direction);
+    bounds.minLats.push(decoded.bounds.minLat);
+    bounds.maxLats.push(decoded.bounds.maxLat);
+    bounds.minLngs.push(decoded.bounds.minLng);
+    bounds.maxLngs.push(decoded.bounds.maxLng);
 
-  _.each(rawData, function (row, index) {
-    var feature = {
+    features.push({
       type: 'Feature',
       properties: {
-        key: index,
-        duration: row.duration
+        key: i,
+        duration: row.duration,
+        end: decoded.end
       },
       geometry: {
         type: 'LineString',
+        coordinates: decoded.coordinates
       }
-    };
+    });
+  }
 
-    feature.geometry.coordinates = _.map(
-      polyline.decode(row.direction),
-      function (x) { return [x[1], x[0]]; }
-    );
-    featureCollection.features.push(feature);
-  });
+  var mapBounds = {
+    minLat: Math.min.apply(null, bounds.minLats),
+    maxLat: Math.max.apply(null, bounds.maxLats),
+    minLng: Math.min.apply(null, bounds.minLngs),
+    maxLng: Math.max.apply(null, bounds.maxLngs)
+  };
 
-  callback(featureCollection);
+  var response = {
+    features: features,
+    mapBounds: mapBounds
+  };
+
+  callback(response);
 }
