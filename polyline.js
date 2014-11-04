@@ -1,4 +1,6 @@
-function polylineDecode (str, precision) {
+var polyline = {};
+
+polyline.decode = function (str, precision) {
     var index = 0,
         lat = 0,
         lng = 0,
@@ -10,7 +12,7 @@ function polylineDecode (str, precision) {
         longitude_change,
         factor = Math.pow(10, precision || 5);
 
-    var nth = 0;
+    var nth = 0, lats = [], lngs = [];
 
     // Coordinates have variable length when encoded, so just keep
     // track of whether we've hit the end of the string. In each
@@ -46,8 +48,24 @@ function polylineDecode (str, precision) {
         lng += longitude_change;
 
         if (nth++ % 2) continue;
+
+        lats.push([lat / factor]);
+        lngs.push([lng /factor]);
+
         coordinates.push([lng / factor, lat / factor]);
     }
+    var bounds = {
+      minLat: Math.min.apply(null, lats),
+      maxLat: Math.max.apply(null, lats),
+      minLng: Math.min.apply(null, lngs),
+      maxLng: Math.max.apply(null, lngs)
+    }
 
-    return coordinates;
+    return {
+      coordinates: coordinates,
+      bounds: bounds,
+      end: coordinates[coordinates.length - 1]
+    }
 };
+
+module.exports = polyline;
