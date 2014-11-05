@@ -132,7 +132,7 @@ function initGraph () {
 // Time and Counts {{{
 var time, queryTime, timer
   , timerStarted = false
-  , timeFactor = 20
+  , timeFactor = 30
   , counts = {}
   , allFeatures = {};
 
@@ -146,7 +146,8 @@ function updateTimer () {
 
 function adjustTimer () {
   if (timer) clearInterval(timer);
-  timer = setInterval(updateTimer, 1000 / timeFactor);
+  var intervalTime = Math.floor(1000 / timeFactor) + 1;
+  timer = setInterval(updateTimer, intervalTime);
 }
 
 function updateCounts (terminal) {
