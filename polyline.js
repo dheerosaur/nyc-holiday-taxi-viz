@@ -63,8 +63,7 @@ polyline.decode = function (str, precision) {
 
     return {
       coordinates: coordinates,
-      bounds: bounds,
-      end: coordinates[coordinates.length - 1]
+      bounds: bounds
     }
 };
 

@@ -180,11 +180,9 @@ function processResponse (response) {
 }
 
 function animatePaths (key) {
-  var features = allFeatures[key]
-    , totalPaths = features.length
-    , halfKey = Math.floor(totalPaths / 2);
+  var features = allFeatures[key];
 
-  if (totalPaths === 0) { getNextChunk(); return; }
+  if (features.length === 0) { getNextChunk(); return; }
 
   // Graph highlighting
   $('.bar.'+ time.format('MM-DD')).css('fill', '#fff');
@@ -196,15 +194,14 @@ function animatePaths (key) {
       .attr('d', d3path(feature))
       .datum(feature.properties)
       .each(pathTransition);
+    if (feature.properties.halfKey) getNextChunk();
   });
 
   delete allFeatures[key];
-  console.log(_.keys(allFeatures).length);
 
   function pathTransition (d) {
     var l = this.getTotalLength()
-      , endPoint = this.getPointAtLength(l)
-      , pickup = getNYCTime(d.pickupTime);
+      , endPoint = this.getPointAtLength(l);
 
     var marker = g.append('circle')
       .attr({r: 2, cx: endPoint.x, cy: endPoint.y})
@@ -218,9 +215,6 @@ function animatePaths (key) {
       .duration(duration)
       .each('start', function (d) {
         this.style.opacity = .8;
-        if (d.key === halfKey) {
-          getNextChunk();
-        }
       })
       .each('end', function (d) {
         updateCounts(d.terminal);
@@ -243,12 +237,11 @@ function animatePaths (key) {
       })
   }
 
-  return;
-
   map.on('viewreset', onViewReset);
 
   function onViewReset () {
-    g.selectAll('circle').each(translatePoint)
+    g.selectAll('path').remove();
+    g.selectAll('circle').remove();
   }
 }
 // End Animation and Markers }}}
