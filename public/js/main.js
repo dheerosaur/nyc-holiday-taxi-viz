@@ -190,6 +190,8 @@ function animatePaths (key) {
   var g = d3.select(document.getElementById(features[0].properties.batchStart));
 
   _.each(features, function (feature) {
+    feature.geometry.coordinates = polyline.decode(
+      feature.geometry.coordinates);
     g.append('path')
       .attr('d', d3path(feature))
       .datum(feature.properties)

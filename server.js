@@ -87,7 +87,7 @@ function createGeojson(rawData, callback) {
       },
       geometry: {
         type: 'LineString',
-        coordinates: decoded.coordinates
+        coordinates: trip.direction
       }
     };
     if (i === halfKey) {
