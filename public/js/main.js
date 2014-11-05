@@ -157,19 +157,16 @@ function updateCounts (terminal) {
 // End time and counts }}}
 
 // Animation and markers {{{
-function processResponse (response) {
-  var bounds = calculateBounds(response.mapBounds)
-    , x = bounds[0].x, y = bounds[0].y
-    , dx = bounds[1].x, dy = bounds[1].y;
+var $w = $(window);
 
-  var svg = d3.select(map.getPanes().overlayPane).append("svg")
-    .attr({width: dx - x, height: dy - y})
-    .style({left: x + 'px', top: y + 'px'});
+function processResponse (response) {
+  var svg = d3.select(map.getPanes().overlayPane)
+    .append("svg")
+    .attr({width: $w.width(), height: $w.height()})
 
   var g = svg.append("g")
     .attr("class", "leaflet-zoom-hide")
     .attr("id", response.batchStart)
-    .attr("transform", "translate(" + -x + "," + -y + ")");
 
   _.extend(allFeatures, response.features);
 

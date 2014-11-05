@@ -1,5 +1,4 @@
 var express = require('express')
-  , polyline = require('./polyline.js')
   , sql = require('sql')
   , sqlite3 = require('sqlite3')
   , _ = require('underscore');
@@ -63,18 +62,12 @@ function getNYCTime (s) {
 function createGeojson(rawData, callback) {
   var features = {};
   var halfKey = Math.floor(rawData.length / 2);
-  var bounds = {minLats: [], maxLats: [], minLngs: [], maxLngs: []};
   var batchStart = rawData[0].pickupTime.replace(/[- :]/g, '');
 
   for (var i=0; i < rawData.length; i++) {
     var trip = rawData[i];
-    var decoded = polyline.decode(trip.direction);
-    bounds.minLats.push(decoded.bounds.minLat);
-    bounds.maxLats.push(decoded.bounds.maxLat);
-    bounds.minLngs.push(decoded.bounds.minLng);
-    bounds.maxLngs.push(decoded.bounds.maxLng);
-
     var pickupTime = trip.pickupTime;
+
     if ( !(pickupTime in features) ) features[pickupTime] = [];
 
     var feature = {
@@ -99,16 +92,8 @@ function createGeojson(rawData, callback) {
     features[pickupTime].push(feature);
   }
 
-  var mapBounds = {
-    minLat: Math.min.apply(null, bounds.minLats),
-    maxLat: Math.max.apply(null, bounds.maxLats),
-    minLng: Math.min.apply(null, bounds.minLngs),
-    maxLng: Math.max.apply(null, bounds.maxLngs)
-  };
-
   var response = {
     features: features,
-    mapBounds: mapBounds,
     batchStart: batchStart
   };
 
