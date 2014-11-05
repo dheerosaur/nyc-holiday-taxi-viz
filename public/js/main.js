@@ -162,11 +162,13 @@ var $w = $(window);
 function processResponse (response) {
   var svg = d3.select(map.getPanes().overlayPane)
     .append("svg")
-    .attr({width: $w.width(), height: $w.height()})
+    .attr({width: $w.width() + 5000, height: $w.height() + 5000})
+    .style({top: '-2500px', left: '-2500px'});
 
   var g = svg.append("g")
     .attr("class", "leaflet-zoom-hide")
     .attr("id", response.batchStart)
+    .attr("transform", "translate(2500, 2500)");
 
   _.extend(allFeatures, response.features);
 
