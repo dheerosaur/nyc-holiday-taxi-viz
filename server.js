@@ -61,8 +61,9 @@ function getNYCTime (s) {
 }
 
 function createGeojson(rawData, callback) {
-  var features = [];
+  var features = {};
   var bounds = {minLats: [], maxLats: [], minLngs: [], maxLngs: []};
+  var batchStart = rawData[0].pickupTime.replace(/[ :]/g, '-');
 
   for (var i=0; i < rawData.length; i++) {
     var trip = rawData[i];
@@ -72,10 +73,14 @@ function createGeojson(rawData, callback) {
     bounds.minLngs.push(decoded.bounds.minLng);
     bounds.maxLngs.push(decoded.bounds.maxLng);
 
-    features.push({
+    var pickupTime = trip.pickupTime;
+    if ( !(pickupTime in features) ) features[pickupTime] = [];
+
+    features[pickupTime].push({
       type: 'Feature',
       properties: {
         key: i,
+        batchStart: batchStart,
         end: decoded.end,
         terminal: trip.terminal,
         duration: trip.duration,
@@ -97,7 +102,8 @@ function createGeojson(rawData, callback) {
 
   var response = {
     features: features,
-    mapBounds: mapBounds
+    mapBounds: mapBounds,
+    batchStart: batchStart
   };
 
   callback(response);

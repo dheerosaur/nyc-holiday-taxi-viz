@@ -124,25 +124,23 @@ function initGraph () {
 // End Graph }}}
 
 // Time and Counts {{{
-var time, timeFactor = 10
-  , timer = setTimeout(function () {}, 1)
-  , queryTime
-  , counts = {};
+var time, queryTime, timer
+  , timerStarted = false
+  , timeFactor = 40
+  , counts = {}
+  , allFeatures = {};
 
 function updateTimer () {
   time.add(1, 'minutes');
   $('.date').text(time.format('dddd, MMM DD'));
   $('.time').text(time.format('hh:mm a'));
-  timer = setTimeout(updateTimer, (1000 / timeFactor));
+  var key = time.format(QF)
+  if (key in allFeatures) animatePaths(key);
 }
 
-function adjustTimer (startTime) {
-  startTime = moment(startTime).zone('-05:00');
-  if (!time.isBefore(startTime)) {
-    time = startTime;
-    clearTimeout(timer);
-    updateTimer();
-  }
+function adjustTimer () {
+  if (timer) clearInterval(timer);
+  timer = setInterval(updateTimer, 25);  // 20 minutes per second
 }
 
 function updateCounts (terminal) {
@@ -153,35 +151,49 @@ function updateCounts (terminal) {
 // End time and counts }}}
 
 // Animation and markers {{{
-function animatePaths (response) {
-  var features = response.features
+function processResponse (response) {
+  var bounds = calculateBounds(response.mapBounds)
+    , x = bounds[0].x, y = bounds[0].y
+    , dx = bounds[1].x, dy = bounds[1].y;
+
+  var svg = d3.select(map.getPanes().overlayPane).append("svg")
+    .attr({width: dx - x, height: dy - y})
+    .style({left: x + 'px', top: y + 'px'});
+
+  var g = svg.append("g")
+    .attr("class", "leaflet-zoom-hide")
+    .attr("id", response.batchStart)
+    .attr("transform", "translate(" + -x + "," + -y + ")");
+
+  _.extend(allFeatures, response.features);
+
+  if ( !timerStarted ) {
+    adjustTimer();
+    timerStarted = true;
+  }
+}
+
+function animatePaths (key) {
+  var features = allFeatures[key]
     , totalPaths = features.length
-    , startTime = getNYCTime(features[0].properties.pickupTime)
     , halfKey = Math.floor(totalPaths / 2);
 
   if (totalPaths === 0) { getNextChunk(); return; }
 
-  var svg = d3.select(map.getPanes().overlayPane).append("svg");
-  var g = svg.append("g").attr("class", "leaflet-zoom-hide");
-
-  // var pkey = moment(startTime).format('DD-HH');
-  reset();
-
-  adjustTimer(startTime);
+  // Graph highlighting
   $('.bar.'+ time.format('MM-DD')).css('fill', '#fff');
 
-  _.each(features, function (feature) {
-    var trip = feature.properties;
-    var pickup = getNYCTime(trip.pickupTime)
-      , delay = (pickup - time) / (60 * timeFactor);
+  var g = d3.select(document.getElementById(features[0].properties.batchStart));
 
-    setTimeout(function () {
-      g.append('path')
-        .attr('d', d3path(feature))
-        .datum(trip)
-        .each(pathTransition);
-    }, delay);
+  _.each(features, function (feature) {
+    g.append('path')
+      .attr('d', d3path(feature))
+      .datum(feature.properties)
+      .each(pathTransition);
   });
+
+  delete allFeatures[key];
+  console.log(_.keys(allFeatures).length);
 
   function pathTransition (d) {
     var l = this.getTotalLength()
@@ -200,7 +212,6 @@ function animatePaths (response) {
       .duration(duration)
       .each('start', function (d) {
         this.style.opacity = .8;
-        adjustTimer(pickup);
         if (d.key === halfKey) {
           getNextChunk();
         }
@@ -211,7 +222,8 @@ function animatePaths (response) {
         marker.attr('class', d.terminal)
           .transition()
           .duration(4000)
-          .style('opacity', 0);
+          .style('opacity', 0)
+          .remove();
 
         d3.select(this)
           .transition()
@@ -225,15 +237,9 @@ function animatePaths (response) {
       })
   }
 
-  map.on('viewreset', onViewReset);
+  return;
 
-  function reset () {
-    var bounds = calculateBounds(response.mapBounds)
-      , x = bounds[0].x, y = bounds[0].y, dx = bounds[1].x, dy = bounds[1].y;
-    svg.attr({width: dx - x, height: dy - y})
-      .style({left: x + 'px', top: y + 'px'});
-    g.attr("transform", "translate(" + -x + "," + -y + ")");
-  }
+  map.on('viewreset', onViewReset);
 
   function onViewReset () {
     g.selectAll('circle').each(translatePoint)
@@ -256,16 +262,16 @@ function getTerminals (selector) {
 
 function getNextChunk () {
   if (TQ.currentStart >= TQ.endDate) {
-    clearTimeout(timer);
+    timer && clearInterval(timer);
     return;
   }
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(2, 'hours').format(QF);
+    , end = current.add(4, 'hours').format(QF);
   TQ.currentStart = end;
 
   prefetchData();
-  $.when(dataCache[start]).then(animatePaths);
+  $.when(dataCache[start]).then(processResponse);
 }
 
 function getData (query) {
@@ -284,10 +290,10 @@ function createQuery () {
 
 function prefetchData () {
   var first = moment(TQ.currentStart);
-  _.each(_.range(8), function () {
+  _.each(_.range(4), function () {
     getData({
       startDate: first.format(QF),
-      endDate: first.add(2, 'hours').format(QF)
+      endDate: first.add(4, 'hours').format(QF)
     });
   });
 }
