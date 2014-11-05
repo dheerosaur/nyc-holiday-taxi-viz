@@ -208,9 +208,12 @@ circle[class^='EWR'] {
 .datetime-box .controls .btn {
   display: inline-block;
   font-size: 12px;
-  border-width: 2px;
+  border-width: 1px;
   padding: 3px 6px;
   margin-right: 3px;
+}
+.datetime-box .controls .btn.current {
+  border-color: rgba(102,175,234,.8);
 }
 
 .tcount {

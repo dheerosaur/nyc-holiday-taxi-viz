@@ -32,7 +32,13 @@
 var map, transform, d3path;
 
 function initMap () {
-  map = L.map('map', {zoomControl: false}).setView([40.708, -73.954], 12);
+  map = L.map('map', {zoomControl: false});
+
+  //map.setView([40.708, -73.954], 12);
+  map.fitBounds([
+    [40.869693, -74.170267],
+    [40.546460, -73.772013]
+  ]);
 
   var MAP_ROOT = 'http://{s}.tiles.mapbox.com/v4/dheerosaur.jo9f69e5'
     , TOKEN = 'pk.eyJ1IjoiZGhlZXJvc2F1ciIsImEiOiJKdHQ2TTJZIn0.qlhdcUlB-i7vnDaXgkNxhw';
@@ -126,7 +132,7 @@ function initGraph () {
 // Time and Counts {{{
 var time, queryTime, timer
   , timerStarted = false
-  , timeFactor = 40
+  , timeFactor = 20
   , counts = {}
   , allFeatures = {};
 
@@ -140,7 +146,7 @@ function updateTimer () {
 
 function adjustTimer () {
   if (timer) clearInterval(timer);
-  timer = setInterval(updateTimer, 25);  // 20 minutes per second
+  timer = setInterval(updateTimer, 1000 / timeFactor);
 }
 
 function updateCounts (terminal) {
@@ -327,6 +333,10 @@ function initEvents () {
   $('.speed').click(function () {
     var speed = $(this).data('speed');
     timeFactor = parseInt(speed, 10);
+    if (timerStarted) adjustTimer();
+
+    $('.speed').removeClass('active');
+    $(this).addClass('current');
   });
 
   // Show countries/airlines when user hovers on terminal
