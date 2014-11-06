@@ -29,7 +29,7 @@
 // End utility functions }}}
 
 // Map and SVG {{{
-var map, transform, d3path;
+var map, transform, d3path, overlayPane;
 
 function initMap () {
   map = L.map('map', {zoomControl: false});
@@ -49,11 +49,32 @@ function initMap () {
   }).addTo(map);
 
   L.control.zoom({ position: 'topright' }).addTo(map);
+
+  overlayPane = map.getPanes().overlayPane;
 }
 
 function initSVG() {
   transform = d3.geo.transform({ point: projectPoint });
   d3path = d3.geo.path().projection(transform);
+}
+
+var $w = $(window);
+
+function appendGroup (groupID) {
+  var svg = d3.select(overlayPane)
+    .append("svg")
+    .attr({
+      'class': 'trip-path',
+      'width': $w.width() + 5000,
+      'height': $w.height() + 5000,
+      'style': 'top:-2500px;left:-2500px'
+    });
+
+  svg.append("g").attr({
+    "id": groupID,
+    "class": "leaflet-zoom-hide",
+    "transform": "translate(2500, 2500)"
+  });
 }
 // End Map and SVG }}}
 
@@ -164,18 +185,10 @@ function updateCounts (terminal) {
 // End time and counts }}}
 
 // Animation and markers {{{
-var $w = $(window);
 
 function processResponse (response) {
-  var svg = d3.select(map.getPanes().overlayPane)
-    .append("svg")
-    .attr({width: $w.width() + 5000, height: $w.height() + 5000})
-    .style({top: '-2500px', left: '-2500px'});
 
-  var g = svg.append("g")
-    .attr("class", "leaflet-zoom-hide")
-    .attr("id", response.batchStart)
-    .attr("transform", "translate(2500, 2500)");
+  appendGroup(response.batchStart);
 
   _.extend(allFeatures, response.features);
 
@@ -257,6 +270,32 @@ function animatePaths (key) {
     g.selectAll('path').remove();
     g.selectAll('circle').remove();
   }
+}
+
+function highlightAirports () {
+  var JFK = map.latLngToLayerPoint(new L.LatLng(40.649, -73.784));
+  var LGA = map.latLngToLayerPoint(new L.LatLng(40.776, -73.876));
+  appendGroup('airports');
+
+  var g = d3.select('#airports');
+
+  var g1 = g.append('g')
+  g1.append('circle').attr('class', 'JFK')
+    .attr({r: 20, cx: JFK.x, cy: JFK.y});
+  g1.append('text')
+    .attr({dx: JFK.x + 25, dy: JFK.y - 5 })
+    .text('JFK')
+
+  var g2 = g.append('g');
+  g2.append('circle').attr('class', 'LGA')
+    .attr({r: 10, cx: LGA.x, cy: LGA.y})
+  g2.append('text')
+    .attr({dx: LGA.x + 15, dy: LGA.y + 5})
+    .text('La Guardia')
+
+  g.transition().duration(4000)
+    .attr('r', 5).style('opacity', 0)
+    .remove();
 }
 // End Animation and Markers }}}
 
@@ -374,6 +413,7 @@ $(function () {
 
   $('#begin').click(function () {
     $('.overlay').hide();
+    highlightAirports();
     updateTimer();
     getNextChunk();
   });

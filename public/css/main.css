@@ -135,7 +135,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     opacity: .5;
   }
 
-#map path {
+#map .trip-path path {
   opacity: 0;
   fill: none;
   stroke-width: 1px;
@@ -157,6 +157,25 @@ circle {
   stroke-width: 0;
 }
 
+#airports circle {
+  opacity: 0.8;
+  fill: yellow;
+}
+
+#airports text {
+  stroke-width: 0;
+  opacity: 1;
+  font-weight: 400;
+  background: red;
+}
+#airports .JFK + text {
+  font-size: 16px;
+  fill: #3f9;
+}
+#airports .LGA + text {
+  font-size: 14px;
+  fill: #fc0;
+}
 
 circle[class^='JFK'] { 
   opacity: 1;
