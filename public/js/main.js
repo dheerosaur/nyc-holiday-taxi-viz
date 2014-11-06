@@ -133,13 +133,19 @@ function initGraph () {
 var time, queryTime, timer
   , timerStarted = false
   , timeFactor = 30
+  , timeTicks = 0
   , counts = {}
   , allFeatures = {};
 
+var $date = $('.date'), $time = $('.time');
+
 function updateTimer () {
   time.add(1, 'minutes');
-  $('.date').text(time.format('dddd, MMM DD'));
-  $('.time').text(time.format('hh:mm a'));
+  if (timeTicks++ % 5) {
+    timeTicks = 0;
+    $date.text(time.format('dddd, MMM DD'));
+    $time.text(time.format('hh:mm a'));
+  }
   var key = time.format(QF)
   if (key in allFeatures) animatePaths(key);
 }
@@ -202,6 +208,12 @@ function animatePaths (key) {
   delete allFeatures[key];
 
   function pathTransition (d) {
+
+    if ( !_.contains(activeTerminals, d.terminal) ) {
+      d3.select(this).remove();
+      return;
+    }
+
     var l = this.getTotalLength()
       , endPoint = this.getPointAtLength(l);
 
@@ -223,7 +235,7 @@ function animatePaths (key) {
 
         marker.attr('class', d.terminal)
           .transition()
-          .duration(4000)
+          .duration(3000)
           .style('opacity', 0)
           .remove();
 
@@ -283,7 +295,6 @@ function getData (query) {
 }
 
 function createQuery () {
-  activeTerminals = getTerminals('.terminals input:checked');
   TQ.startDate = $('#startDate').val() + ' 00:00:00';
   TQ.endDate = $('#endDate').val() + ' 00:00:00';
   TQ.currentStart = TQ.startDate;
@@ -315,6 +326,7 @@ function backgroundStart () {
 
 // jQuery events {{{
 function checkboxToggled () {
+  activeTerminals = getTerminals('.terminals input:checked');
   $('.terminals .checkbox').each(function () {
     var $input = $('input', this);
     var disabled = !$input.is(':checked');
@@ -330,7 +342,7 @@ function initEvents () {
     timeFactor = parseInt(speed, 10);
     if (timerStarted) adjustTimer();
 
-    $('.speed').removeClass('active');
+    $('.speed').removeClass('current');
     $(this).addClass('current');
   });
 
