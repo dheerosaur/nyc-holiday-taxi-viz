@@ -64,7 +64,6 @@ function appendGroup (groupID) {
   var svg = d3.select(overlayPane)
     .append("svg")
     .attr({
-      'class': 'trip-path',
       'width': $w.width() + 5000,
       'height': $w.height() + 5000,
       'style': 'top:-2500px;left:-2500px'

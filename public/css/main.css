@@ -126,7 +126,6 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .terminals {
-  margin-bottom: 20px;
 }
   .terminals .checkbox label {
     font-weight: 400;
@@ -135,7 +134,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     opacity: .5;
   }
 
-#map .trip-path path {
+#map path {
   opacity: 0;
   fill: none;
   stroke-width: 1px;
@@ -161,21 +160,22 @@ circle {
   opacity: 0.8;
   fill: yellow;
 }
-
-#airports text {
-  stroke-width: 0;
-  opacity: 1;
-  font-weight: 400;
-  background: red;
-}
-#airports .JFK + text {
-  font-size: 16px;
-  fill: #3f9;
-}
-#airports .LGA + text {
-  font-size: 14px;
-  fill: #fc0;
-}
+  #airports text {
+    stroke-width: 0;
+    opacity: 1;
+    font-weight: 400;
+    background: red;
+  }
+  #airports .JFK,
+  #airports .JFK + text {
+    font-size: 16px;
+    fill: #3f9;
+  }
+  #airports .LGA,
+  #airports .LGA + text {
+    font-size: 14px;
+    fill: #fc0;
+  }
 
 circle[class^='JFK'] { 
   opacity: 1;
@@ -280,4 +280,23 @@ circle[class^='EWR'] {
   .overlay .innerlay p {
     font-size: 15px;
     font-weight: 300;
+  }
+  .overlay .innerlay .btn {
+    margin-top: 5px;
+    padding: 8px 20px;
+  }
+
+.legends span {
+  float: left;
+  width: 50%;
+  text-align: center;
+}
+  .legends i {
+    margin-right: 10px;
+  }
+  .legends .jfk i {
+    color: #3f9;
+  }
+  .legends .lga i {
+    color: #fc0;
   }
