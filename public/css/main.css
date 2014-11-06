@@ -292,6 +292,8 @@ circle[class^='EWR'] {
   text-align: center;
 }
   .legends i {
+    font-size: 16px;
+    top: 3px;
     margin-right: 10px;
   }
   .legends .jfk i {
