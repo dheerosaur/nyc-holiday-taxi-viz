@@ -318,7 +318,7 @@ function getNextChunk () {
   }
   var current = moment(TQ.currentStart)
     , start = current.format(QF)
-    , end = current.add(4, 'hours').format(QF);
+    , end = current.add(6, 'hours').format(QF);
   TQ.currentStart = end;
 
   prefetchData();
@@ -343,7 +343,7 @@ function prefetchData () {
   _.each(_.range(4), function () {
     getData({
       startDate: first.format(QF),
-      endDate: first.add(4, 'hours').format(QF)
+      endDate: first.add(6, 'hours').format(QF)
     });
   });
 }
