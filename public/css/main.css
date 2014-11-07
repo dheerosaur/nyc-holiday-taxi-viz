@@ -82,21 +82,20 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   bottom: 10px;
   left: 10px;
   width: 600px;
-  height: 145px;
+  height: 185px;
   padding: 0;
 }
 
 .graph-heading { 
-  position: absolute;
-  top: -30px;
-  left: 5px;
+  margin-left: 10px;
+  margin-bottom: 0;
   font-size: 14px;
   color: white;
   text-shadow: 1px 1px 2px #000;
 }
 .graph-left {
   position: absolute;
-  top: 20px;
+  top: 50px;
   left: 50px;
   font-size: 12px;
   -webkit-transform: rotate(270deg);
@@ -107,7 +106,8 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 
 .graph-tip {
   position: absolute;
-  top: 10px;
+  top: 25px;
+  padding: 3px 5px;
   color: #fff;
   background: #000;
   font-size: 13px;

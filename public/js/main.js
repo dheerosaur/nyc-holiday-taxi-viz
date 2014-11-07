@@ -90,7 +90,7 @@ var dateTicks = {
 }
 
 function initGraph () {
-  var $graph = $('.graph')
+  var $graph = $('.chart-box')
     , width = $graph.width() - 60
     , height = $graph.height() - 40;
 
