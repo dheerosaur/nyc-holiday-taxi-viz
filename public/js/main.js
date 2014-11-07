@@ -165,7 +165,7 @@ var $date = $('.date'), $time = $('.time');
 
 function updateTimer () {
   time.add(1, 'minutes');
-  if (timeTicks++ % 5) {
+  if (timeTicks++ % 4) {
     timeTicks = 0;
     $date.text(time.format('dddd, MMM DD'));
     $time.text(time.format('hh:mm a'));
@@ -378,14 +378,22 @@ function checkboxToggled () {
 }
   
 function initEvents () {
+  var $timeFactor = $('.time-factor span');
 
-  $('.speed').click(function () {
-    var speed = $(this).data('speed');
-    timeFactor = parseInt(speed, 10);
-    if (timerStarted) adjustTimer();
+  $('.faster').click(function () {
+    if (timeFactor < 60) {
+      timeFactor = timeFactor + 5;
+      if (timerStarted) adjustTimer();
+      $timeFactor.text(timeFactor);
+    }
+  });
 
-    $('.speed').removeClass('current');
-    $(this).addClass('current');
+  $('.slower').click(function () {
+    if (timeFactor > 10) {
+      timeFactor = timeFactor - 5;
+      if (timerStarted) adjustTimer();
+      $timeFactor.text(timeFactor);
+    }
   });
 
   // Show countries/airlines when user hovers on terminal

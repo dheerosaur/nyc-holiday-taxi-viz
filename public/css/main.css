@@ -49,7 +49,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 
 .box {
   position: absolute;
-  width: 250px;
+  width: 260px;
   padding: 20px;
   background: rgba(0,0,0,.6);
   border-radius: 5px;
@@ -63,15 +63,15 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .filters.box {
-  top: 160px;
+  top: 170px;
   left: 10px;
 }
 
 .airlines.box {
-  min-width: 250px;
+  min-width: 260px;
   width: auto;
-  top: 160px;
-  left: 270px;
+  top: 170px;
+  left: 280px;
   display: none;
   font-size: 13px;
   font-weight: 400;
@@ -253,7 +253,7 @@ circle[class^='EWR'] {
   margin-bottom: 5px;
 }
 
-.datetime-box .controls .btn {
+.datetime-box .controls .btn.speed {
   display: inline-block;
   font-size: 14px;
   font-weight: 400;
@@ -262,8 +262,12 @@ circle[class^='EWR'] {
   margin-right: 3px;
   background-color: rgba(0,0,0,.8);
 }
+.datetime-box .controls .btn.speed i {
+  font-size: 13px;
+  color: #ccc;
+}
 .faster {
-  margin-left: 10px;
+  margin-left: 3px;
 }
 
 .tcount {
@@ -336,3 +340,9 @@ circle[class^='EWR'] {
   .legends .lga i {
     color: #fc0;
   }
+
+.time-factor {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 400;
+}
