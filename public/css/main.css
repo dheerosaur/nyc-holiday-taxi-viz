@@ -75,6 +75,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   display: none;
   font-size: 13px;
   font-weight: 400;
+  z-index: 501;
 }
 
 .graph.box {
@@ -278,13 +279,16 @@ circle[class^='EWR'] {
 }
 .overlay {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   height: auto;
 
-  background: rgba(0,0,0,.8);
+  background: rgba(0,0,0,.9);
   border-radius: 5px;
-  color: #eee;
+  color: #ddd;
+  text-shadow: 1px 1px 1px #000;
+  letter-spacing: 1px;
+
   z-index: 500;
 
   -webkit-transform: translate(-50%,-50%);
@@ -304,6 +308,8 @@ circle[class^='EWR'] {
     margin-bottom: 0;
   }
   .overlay .innerlay h3 {
+    font-size: 25px;
+    margin-top: 0;
     margin-bottom: 15px;
   }
   .overlay .innerlay p {
