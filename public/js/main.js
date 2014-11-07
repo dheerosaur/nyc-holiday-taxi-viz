@@ -47,8 +47,7 @@ function initMap () {
     attribution: (
       'Maps from <a href="http://www.mapbox.com/about/maps/" target="_blank">Mapbox</a> | ' +
       '<span>Directions Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>' +
-      '<img src="http://developer.mapquest.com/content/osm/mq_logo.png"></span> | ' +
-      '© OpenStreetMap contributors'
+      ' | © OpenStreetMap contributors'
     ),
     maxZoom: 18,
   }).addTo(map);

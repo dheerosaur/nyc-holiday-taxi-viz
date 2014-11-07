@@ -52,7 +52,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   position: absolute;
   width: 250px;
   padding: 20px;
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.6);
   border-radius: 5px;
   color: #eee;
 }
@@ -68,10 +68,13 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .airlines.box {
+  min-width: 250px;
+  width: auto;
   top: 160px;
   left: 270px;
   display: none;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .graph.box {
@@ -152,6 +155,13 @@ b, strong, h1, h2, h3, h4, h5, h6 {
   .terminals .checkbox.striked {
     opacity: .5;
   }
+
+.airlines > div > div {
+  float: left;
+}
+.airlines > div > div+div {
+  margin-left: 30px;
+}
 
 #map path {
   opacity: 0;
