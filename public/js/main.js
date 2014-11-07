@@ -240,7 +240,7 @@ function animatePaths (key) {
       .transition()
       .duration(duration)
       .each('start', function (d) {
-        this.style.opacity = .8;
+        this.style.opacity = 1;
       })
       .each('end', function (d) {
         updateCounts(d.terminal);

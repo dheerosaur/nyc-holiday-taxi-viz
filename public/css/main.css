@@ -272,7 +272,7 @@ circle[class^='EWR'] {
   left: 50%;
   height: auto;
 
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.8);
   border-radius: 5px;
   color: #eee;
   z-index: 500;
@@ -286,7 +286,7 @@ circle[class^='EWR'] {
   box-shadow: 0 0 4px rgba(102,175,234,.8);
 }
   .container.overlay {
-    max-width: 700px;
+    max-width: 720px;
   }
   .overlay .innerlay {
     padding: 40px 30px;
@@ -298,7 +298,7 @@ circle[class^='EWR'] {
   }
   .overlay .innerlay p {
     font-size: 15px;
-    font-weight: 300;
+    font-weight: 400;
   }
   .overlay .innerlay .btn {
     margin-top: 5px;
