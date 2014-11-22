@@ -1,7 +1,6 @@
 var express = require('express')
   , sql = require('sql')
-  , sqlite3 = require('sqlite3')
-  , _ = require('underscore');
+  , sqlite3 = require('sqlite3');
 
 var app = express()
   , port = process.env.PORT || 8000
