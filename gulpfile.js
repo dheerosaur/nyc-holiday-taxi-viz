@@ -2,7 +2,17 @@ var gulp = require('gulp')
   , concat = require('gulp-concat')
   , uglify = require('gulp-uglify');
 
-gulp.task('compress', function () {
+gulp.task('compress-css', function () {
+  gulp.src([
+    "public/css/leaflet.css",
+    "public/css/bootstrap.min.css",
+    "public/css/main.css"
+    ])
+    .pipe(concat('build.css'))
+    .pipe(gulp.dest('public/css'));
+});
+
+gulp.task('compress-js', function () {
   gulp.src([
       "public/js/leaflet.js",
       "public/js/polyline.js",
@@ -14,10 +24,14 @@ gulp.task('compress', function () {
     .pipe(uglify())
     .pipe(concat('build.js'))
     .pipe(gulp.dest('public/js/'));
+
 });
 
 gulp.task('watch', function() {
-  gulp.watch('public/js/*.js', ['compress']);
+  gulp.watch('public/css/*.css', ['compress-css']);
+  gulp.watch('public/js/*.js', ['compress-js']);
 })
 
-gulp.task('default', ['compress', 'watch']);
+gulp.task('default', [
+  'watch'
+]);
