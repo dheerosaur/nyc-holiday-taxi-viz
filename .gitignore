@@ -1,3 +1,4 @@
 *.csv
 /node_modules
 /db
+/bin/my_config.py
