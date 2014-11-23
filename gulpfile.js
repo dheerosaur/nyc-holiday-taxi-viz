@@ -9,7 +9,7 @@ gulp.task('compress-css', function () {
     "public/css/main.css"
     ])
     .pipe(concat('build.css'))
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest('public/dist/'));
 });
 
 gulp.task('compress-js', function () {
@@ -23,7 +23,7 @@ gulp.task('compress-js', function () {
     ])
     .pipe(uglify())
     .pipe(concat('build.js'))
-    .pipe(gulp.dest('public/js/'));
+    .pipe(gulp.dest('public/dist/'));
 
 });
 
