@@ -34,7 +34,6 @@ var map, transform, d3path, overlayPane;
 function initMap () {
   map = L.map('map', {zoomControl: false});
 
-  //map.setView([40.708, -73.954], 12);
   map.fitBounds([
     [40.869693, -74.170267],
     [40.546460, -73.772013]
@@ -344,12 +343,13 @@ function createQuery () {
 
 function prefetchData () {
   var first = moment(TQ.currentStart);
-  _.each(_.range(4), function () {
+  // Prefetch the first four chunks
+  for (var i = 0; i < 4; i++) {
     getData({
       startDate: first.format(QF),
       endDate: first.add(6, 'hours').format(QF)
     });
-  });
+  }
 }
 
 function backgroundStart () {
