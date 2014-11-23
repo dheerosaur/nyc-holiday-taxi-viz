@@ -1,35 +1,23 @@
 // Utility functions {{{
 
-  function translatePoint(d) {
-    var point = map.latLngToLayerPoint(new L.LatLng(d.lat, d.lng));
-    this.setAttribute('cx', point.x)
-    this.setAttribute('cy', point.y);
-  }
+function pointToLatLon(p) {
+  return map.layerPointToLatLng(new L.Point(p.x, p.y));
+}
 
-  function calculateBounds(b) {
-    var topLeft = map.latLngToLayerPoint(new L.LatLng(b.maxLat, b.minLng));
-    var bottomRight = map.latLngToLayerPoint(new L.LatLng(b.minLat, b.maxLng));
-    return [ topLeft, bottomRight ];
-  }
+function projectPoint (x, y) {
+  var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+  this.stream.point(point.x, point.y);
+}
 
-  function pointToLatLon(p) {
-    return map.layerPointToLatLng(new L.Point(p.x, p.y));
-  }
-
-  function projectPoint (x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-  }
-
-  function getNYCTime (s) {
-    var formatted = s.replace(' ', 'T') + '-05:00';
-    return new Date(formatted);
-  }
+function getNYCTime (s) {
+  var formatted = s.replace(' ', 'T') + '-05:00';
+  return new Date(formatted);
+}
 
 // End utility functions }}}
 
 // Map and SVG {{{
-var map, transform, d3path, overlayPane;
+var map, transform, d3path, $w = $(window);
 
 function initMap () {
   map = L.map('map', {zoomControl: false});
@@ -52,8 +40,6 @@ function initMap () {
   }).addTo(map);
 
   L.control.zoom({ position: 'topright' }).addTo(map);
-
-  overlayPane = map.getPanes().overlayPane;
 }
 
 function initSVG() {
@@ -61,9 +47,8 @@ function initSVG() {
   d3path = d3.geo.path().projection(transform);
 }
 
-var $w = $(window);
-
 function appendGroup (groupID) {
+  var overlayPane = map.getPanes().overlayPane;
   var svg = d3.select(overlayPane)
     .append("svg")
     .attr({
@@ -81,19 +66,19 @@ function appendGroup (groupID) {
 // End Map and SVG }}}
 
 // Graph {{{
-var dateTicks = {
-  '11-16': 'Nov 16th',
-  '11-28': 'Thanks Giving',
-  '12-10': 'Dec 10th',
-  '12-25': 'Christmas'
-}
-
 function initGraph () {
   var $graph = $('.chart-box')
     , width = $graph.width() - 60
-    , height = $graph.height() - 40;
+    , height = $graph.height() - 40
+    , data = tripsPerDate;
 
-  var data = tripsPerDate;
+  var dateTicks = {
+    '11-16': 'Nov 16th',
+    '11-28': 'Thanks Giving',
+    '12-10': 'Dec 10th',
+    '12-25': 'Christmas'
+  }
+
   var x = d3.scale.ordinal()
     .domain(data.map(function (d) { return d[0]; }))
     .rangeBands([0, width]);
@@ -121,6 +106,7 @@ function initGraph () {
 
   var barWidth = x.rangeBand() / 2
     , barOffset = 40 + barWidth;
+
   chart.selectAll('.bar').data(data)
     .enter().append('rect')
     .each(function (d) {
@@ -153,7 +139,7 @@ function initGraph () {
 // End Graph }}}
 
 // Time and Counts {{{
-var time, queryTime, timer
+var time, timer
   , timerStarted = false
   , timeFactor = 30
   , timeTicks = 0
@@ -354,7 +340,6 @@ function prefetchData () {
 
 function backgroundStart () {
   createQuery();
-  queryTime = new Date();
   time = moment(getNYCTime(TQ.startDate)).zone('-05:00')
 
   // Clear counts. Hide/show stats as required
