@@ -5,10 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.9.7",
-    "polyline": "0.0.3",
     "sql": "^0.40.0",
-    "sqlite3": "^3.0.2",
-    "underscore": "^1.7.0"
+    "sqlite3": "^3.0.2"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
@@ -20,8 +18,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:dheerosaur/taxis.git"
+    "url": "git@github.com:dheerosaur/nyc-holiday-taxi-viz.git"
   },
   "author": "Dheeraj Sayala",
-  "license": "ISC"
+  "license": "MIT"
 }
